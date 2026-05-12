@@ -94,3 +94,52 @@ export async function addMemory(formData: FormData) {
     return { success: false, error: "Failed to add memory" };
   }
 }
+
+export async function editMemory(id: string, formData: FormData) {
+  try {
+    const type = formData.get("type") as string;
+    const caption = formData.get("caption") as string;
+    const date = formData.get("date") as string;
+    const location = formData.get("location") as string;
+    const content = formData.get("content") as string;
+    const songTitle = formData.get("songTitle") as string;
+    const songArtist = formData.get("songArtist") as string;
+    const songSpotifyId = formData.get("songSpotifyId") as string;
+    
+    // Check if new image was provided
+    let imageBase64: string | undefined = undefined;
+    const imageFile = formData.get("image") as File;
+    if (imageFile && imageFile.size > 0) {
+      const buffer = await imageFile.arrayBuffer();
+      const base64Data = Buffer.from(buffer).toString("base64");
+      imageBase64 = `data:${imageFile.type};base64,${base64Data}`;
+    }
+
+    const updateData: any = {
+      type: type || "photo",
+      caption,
+      date,
+      location,
+      content,
+      songTitle,
+      songArtist,
+      songSpotifyId,
+    };
+
+    if (imageBase64 !== undefined) {
+      updateData.imageBase64 = imageBase64;
+    }
+
+    await prisma.memory.update({
+      where: { id },
+      data: updateData
+    });
+
+    revalidatePath("/");
+    revalidatePath("/admin");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to edit memory:", error);
+    return { success: false, error: "Failed to edit memory" };
+  }
+}
