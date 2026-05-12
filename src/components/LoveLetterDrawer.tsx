@@ -38,7 +38,6 @@ export default function LoveLetterDrawer({ memory, onClick }: LoveLetterDrawerPr
         opacity: { duration: 1 }
       }}
       className="absolute cursor-grab active:cursor-grabbing w-[320px]"
-      style={{ touchAction: "none" }}
     >
       {/* Drawer Body */}
       <div 
