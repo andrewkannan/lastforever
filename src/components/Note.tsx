@@ -37,7 +37,6 @@ export default function Note({ memory, onClick }: NoteProps) {
       }}
       onClick={() => onClick(memory)}
       className="absolute bg-[#FFF9C4] p-6 paper-shadow cursor-grab active:cursor-grabbing w-[250px] flex flex-col items-center justify-center group"
-      style={{ touchAction: "none" }}
     >
       <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-red-400 rounded-full shadow-sm z-10" />
 

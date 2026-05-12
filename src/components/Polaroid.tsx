@@ -38,7 +38,6 @@ export default function Polaroid({ memory, onClick }: PolaroidProps) {
       }}
       onClick={() => onClick(memory)}
       className="absolute bg-paper p-4 pb-12 polaroid-shadow cursor-grab active:cursor-grabbing w-[300px] flex flex-col gap-3 group"
-      style={{ touchAction: "none" }}
     >
       {/* Tape texture overlay mock */}
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm rotate-[-2deg] shadow-sm z-10" />
