@@ -26,6 +26,9 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
   const timelinePos = { x: 1600, y: 300 };
   const futurePos = { x: 2300, y: 800 };
 
+  const timelineMemories = initialMemories.filter(m => m.type === "timeline").sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  const futureMemories = initialMemories.filter(m => m.type === "future");
+
   return (
     <>
       <div 
@@ -43,8 +46,8 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
           dragTransition={{ bounceStiffness: 100, bounceDamping: 20, power: 0.2 }}
           initial={{ x: -500, y: -200 }}
         >
-          <TimelineSection position={timelinePos} />
-          <FutureSection position={futurePos} />
+          <TimelineSection position={timelinePos} memories={timelineMemories} />
+          <FutureSection position={futurePos} memories={futureMemories} />
           
           <LoveLetterDrawer 
             memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 

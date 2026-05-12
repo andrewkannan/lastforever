@@ -44,7 +44,7 @@ export default function LoveLetterDrawer({ memory, onClick }: LoveLetterDrawerPr
         className="relative bg-[#8b7355] rounded-sm shadow-[0_10px_20px_rgba(0,0,0,0.3)] border-b-4 border-r-4 border-[#5c4a3d] p-4 flex flex-col items-center justify-center cursor-pointer overflow-visible"
         onClick={() => {
           setIsOpen(!isOpen);
-          if (!isOpen && memory.content) {
+          if (!isOpen && (memory.content || memory.caption)) {
              // Let user read the letter after drawer opens
              setTimeout(() => onClick(memory), 800);
           }

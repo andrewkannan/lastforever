@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 
 interface FutureProps {
   position: { x: number; y: number };
+  memories: any[];
 }
 
-export default function FutureSection({ position }: FutureProps) {
-  const dreams = [
+export default function FutureSection({ position, memories }: FutureProps) {
+  // Use DB memories or fallback if empty
+  const dreams = memories.length > 0 ? memories.map(m => m.caption) : [
     "A cozy home with a large kitchen",
     "Kids running in the backyard",
     "Sunday morning pancakes",

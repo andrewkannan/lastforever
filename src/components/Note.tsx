@@ -41,7 +41,7 @@ export default function Note({ memory, onClick }: NoteProps) {
       <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-red-400 rounded-full shadow-sm z-10" />
 
       <p className="font-hand text-3xl text-ink leading-tight text-center">
-        {memory.content}
+        {memory.content || memory.caption}
       </p>
     </motion.div>
   );

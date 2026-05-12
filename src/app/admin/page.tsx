@@ -86,12 +86,12 @@ export default function AdminPage() {
 
         {isAdding && (
           <form onSubmit={handleAdd} className="bg-white p-8 rounded-lg shadow-lg mb-12 flex flex-col gap-6">
-            <h2 className="font-sans text-xl font-bold">Add New Memory</h2>
+            <h2 className="font-sans text-xl font-bold text-ink">Add New Memory / Item</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-bold text-ink-light">Type</label>
-                <select name="type" className="p-3 border rounded bg-transparent" onChange={(e) => {
+                <select name="type" className="p-3 border rounded bg-transparent text-ink" onChange={(e) => {
                   const form = e.target.form;
                   if (form) {
                     form.dataset.memoryType = e.target.value;
@@ -102,36 +102,53 @@ export default function AdminPage() {
                   <option value="photo">Photo (Polaroid)</option>
                   <option value="note">Sticky Note</option>
                   <option value="letter">Love Letter</option>
+                  <option value="timeline">Timeline Milestone</option>
+                  <option value="future">Future Dream</option>
                 </select>
               </div>
 
-              {/* These fields are hidden if the type is "note" */}
-              <div className="flex flex-col gap-2 group-note-hidden hidden" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
-                <label className="text-sm font-bold text-ink-light">Date</label>
-                <input name="date" type="text" placeholder="e.g. October 14, 2023" className="p-3 border rounded bg-transparent" />
+              {/* Hide Date for Notes, Letters, Future. Show for Photo and Timeline. */}
+              <div className="flex flex-col gap-2" style={{ 
+                display: typeof document !== "undefined" && ["note", "letter", "future"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
+              }}>
+                <label className="text-sm font-bold text-ink-light">
+                  {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : "Date"}
+                </label>
+                <input name="date" type="text" placeholder="e.g. October 14, 2023" className="p-3 border rounded bg-transparent text-ink" />
               </div>
 
-              <div className="flex flex-col gap-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
+              {/* Hide Location for everything except Photo */}
+              <div className="flex flex-col gap-2" style={{ 
+                display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "photo" && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
+              }}>
                 <label className="text-sm font-bold text-ink-light">Location</label>
-                <input name="location" type="text" placeholder="e.g. Malibu, CA" className="p-3 border rounded bg-transparent" />
+                <input name="location" type="text" placeholder="e.g. Malibu, CA" className="p-3 border rounded bg-transparent text-ink" />
               </div>
 
-              <div className="flex flex-col gap-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
+              {/* Hide Image Upload for everything except Photo */}
+              <div className="flex flex-col gap-2" style={{ 
+                display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "photo" && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
+              }}>
                 <label className="text-sm font-bold text-ink-light">Image Upload</label>
-                <input name="image" type="file" accept="image/*" className="p-3 border rounded bg-transparent" />
+                <input name="image" type="file" accept="image/*" className="p-3 border rounded bg-transparent text-ink" />
               </div>
               
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-sm font-bold text-ink-light">Caption or Content</label>
-                <textarea name="caption" rows={3} placeholder="Write your memory or note here..." className="p-3 border rounded bg-transparent" />
+                <label className="text-sm font-bold text-ink-light">
+                  {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : "Caption or Content"}
+                </label>
+                <textarea name="caption" rows={3} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" />
               </div>
 
-              <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
+              {/* Hide Spotify for everything except Photo */}
+              <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2" style={{ 
+                display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "photo" && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
+              }}>
                 <label className="text-sm font-bold text-ink-light mb-1">Spotify Music Integration (Optional)</label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <input name="songTitle" type="text" placeholder="Song Title" className="p-3 border rounded bg-transparent" />
-                  <input name="songArtist" type="text" placeholder="Artist" className="p-3 border rounded bg-transparent" />
-                  <input name="songSpotifyId" type="text" placeholder="Spotify Track ID" className="p-3 border rounded bg-transparent" />
+                  <input name="songTitle" type="text" placeholder="Song Title" className="p-3 border rounded bg-transparent text-ink" />
+                  <input name="songArtist" type="text" placeholder="Artist" className="p-3 border rounded bg-transparent text-ink" />
+                  <input name="songSpotifyId" type="text" placeholder="Spotify Track ID" className="p-3 border rounded bg-transparent text-ink" />
                 </div>
               </div>
             </div>

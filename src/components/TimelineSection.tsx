@@ -1,18 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Memory } from "@/data/memories";
 
 interface TimelineProps {
   position: { x: number; y: number };
+  memories: any[];
 }
 
-export default function TimelineSection({ position }: TimelineProps) {
-  const milestones = [
-    { year: "2022", event: "First Meeting" },
-    { year: "2023", event: "Our First Trip" },
-    { year: "2024", event: "The Engagement" },
-    { year: "Forever", event: "Building Our Life" }
+export default function TimelineSection({ position, memories }: TimelineProps) {
+  // Use DB memories or fallback if empty
+  const milestones = memories.length > 0 ? memories : [
+    { date: "2022", caption: "First Meeting" },
+    { date: "2023", caption: "Our First Trip" },
+    { date: "2024", caption: "The Engagement" },
+    { date: "Forever", caption: "Building Our Life" }
   ];
 
   return (
@@ -33,10 +34,10 @@ export default function TimelineSection({ position }: TimelineProps) {
             
             <div className="flex flex-col">
               <span className="font-sans font-bold text-ink-light tracking-widest text-sm mb-1">
-                {milestone.year}
+                {milestone.date}
               </span>
               <span className="font-serif text-3xl text-ink">
-                {milestone.event}
+                {milestone.caption}
               </span>
             </div>
           </div>
