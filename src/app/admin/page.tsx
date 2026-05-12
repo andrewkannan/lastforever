@@ -91,24 +91,32 @@ export default function AdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-bold text-ink-light">Type</label>
-                <select name="type" className="p-3 border rounded bg-transparent">
+                <select name="type" className="p-3 border rounded bg-transparent" onChange={(e) => {
+                  const form = e.target.form;
+                  if (form) {
+                    form.dataset.memoryType = e.target.value;
+                    // Trigger a re-render to update UI
+                    setMemories([...memories]); 
+                  }
+                }}>
                   <option value="photo">Photo (Polaroid)</option>
                   <option value="note">Sticky Note</option>
                   <option value="letter">Love Letter</option>
                 </select>
               </div>
 
-              <div className="flex flex-col gap-2">
+              {/* These fields are hidden if the type is "note" */}
+              <div className="flex flex-col gap-2 group-note-hidden hidden" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
                 <label className="text-sm font-bold text-ink-light">Date</label>
                 <input name="date" type="text" placeholder="e.g. October 14, 2023" className="p-3 border rounded bg-transparent" />
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
                 <label className="text-sm font-bold text-ink-light">Location</label>
                 <input name="location" type="text" placeholder="e.g. Malibu, CA" className="p-3 border rounded bg-transparent" />
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
                 <label className="text-sm font-bold text-ink-light">Image Upload</label>
                 <input name="image" type="file" accept="image/*" className="p-3 border rounded bg-transparent" />
               </div>
@@ -118,7 +126,7 @@ export default function AdminPage() {
                 <textarea name="caption" rows={3} placeholder="Write your memory or note here..." className="p-3 border rounded bg-transparent" />
               </div>
 
-              <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2">
+              <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2" style={{ display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "note" ? "none" : "flex" }}>
                 <label className="text-sm font-bold text-ink-light mb-1">Spotify Music Integration (Optional)</label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <input name="songTitle" type="text" placeholder="Song Title" className="p-3 border rounded bg-transparent" />

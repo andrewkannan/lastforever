@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${caveat.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-hidden selection:bg-rose-200 selection:text-rose-900">
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-rose-200 selection:text-rose-900">
         {children}
       </body>
     </html>

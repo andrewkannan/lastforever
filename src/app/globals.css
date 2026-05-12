@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #FDFBF7;
-  --color-foreground: #3B312A;
+  /* Pastel, Lily, Sunflower, Baby Breath palette */
+  --color-background: #FAFCF8; /* Soft baby breath airy white */
+  --color-foreground: #4A5245; /* Soft stem green */
   
-  --color-paper: #F6F3EB;
-  --color-paper-dark: #EAE5D9;
-  --color-rose-soft: #E6C8C8;
-  --color-ink: #2A2522;
-  --color-ink-light: #5A514B;
+  --color-paper: #FFFFFF; /* Lily white */
+  --color-paper-dark: #F2F5EF; /* Shaded petal */
+  --color-rose-soft: #FFF4CE; /* Pastel sunflower yellow */
+  --color-ink: #3E4738; /* Dark leaf green */
+  --color-ink-light: #768571; /* Soft baby breath stem */
 
   --font-sans: var(--font-inter), sans-serif;
   --font-serif: var(--font-playfair), serif;
