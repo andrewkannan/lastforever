@@ -58,7 +58,7 @@ export const memories: Memory[] = [
 ];
 
 export const heroConfig = {
-  names: "Emma & Noah",
+  names: "Andrew & Kenisha",
   tagline: "A million memories, a single forever.",
   music: {
     title: "Clair de Lune",
