@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { Memory } from "@/data/memories";
+import { updateMemoryPosition } from "@/actions/memoryActions";
 
 interface NoteProps {
   memory: Memory;
@@ -9,15 +10,20 @@ interface NoteProps {
 }
 
 export default function Note({ memory, onClick }: NoteProps) {
+  const x = useMotionValue(memory.position.x);
+  const y = useMotionValue(memory.position.y);
+
   return (
     <motion.div
       drag
       dragMomentum={false}
+      style={{ x, y, touchAction: "none" }}
+      onDragEnd={async () => {
+        await updateMemoryPosition(memory.id, x.get(), y.get());
+      }}
       whileHover={{ scale: 1.05, zIndex: 100 }}
       whileTap={{ scale: 0.95, zIndex: 100 }}
       initial={{ 
-        x: memory.position.x, 
-        y: memory.position.y, 
         rotate: memory.rotation,
         opacity: 0,
         scale: 0.8

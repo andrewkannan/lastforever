@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useState } from "react";
 import { Memory } from "@/data/memories";
 import { MailOpen } from "lucide-react";
+import { updateMemoryPosition } from "@/actions/memoryActions";
 
 interface LoveLetterDrawerProps {
   memory: Memory;
@@ -12,15 +13,19 @@ interface LoveLetterDrawerProps {
 
 export default function LoveLetterDrawer({ memory, onClick }: LoveLetterDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const x = useMotionValue(memory.position.x);
+  const y = useMotionValue(memory.position.y);
 
   return (
     <motion.div
       drag
       dragMomentum={false}
+      style={{ x, y, touchAction: "none" }}
+      onDragEnd={async () => {
+        await updateMemoryPosition(memory.id, x.get(), y.get());
+      }}
       whileHover={{ scale: 1.02, zIndex: 100 }}
       initial={{ 
-        x: memory.position.x, 
-        y: memory.position.y, 
         rotate: memory.rotation,
         opacity: 0,
         scale: 0.8

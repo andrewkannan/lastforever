@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Memory {
+  id            String   @id @default(uuid())
+  type          String   // "photo" | "note" | "letter" | "timeline" | "future"
+  imageUrl      String?
+  imageBase64   String?  // Store base64 encoded image to avoid external buckets
+  date          String?
+  caption       String?
+  location      String?
+  rotation      Float
+  posX          Float
+  posY          Float
+  content       String?
+  
+  // Song details
+  songTitle     String?
+  songArtist    String?
+  songSpotifyId String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
