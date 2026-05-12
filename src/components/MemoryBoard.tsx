@@ -38,8 +38,9 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
           className="w-[4000px] h-[3000px] cursor-grab active:cursor-grabbing relative"
           drag
           dragConstraints={constraintsRef}
-          dragElastic={0.2}
-          dragMomentum={false}
+          dragElastic={0.1}
+          dragMomentum={true}
+          dragTransition={{ bounceStiffness: 100, bounceDamping: 20, power: 0.2 }}
           initial={{ x: -500, y: -200 }}
         >
           <TimelineSection position={timelinePos} />
