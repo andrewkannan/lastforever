@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Polaroid from "./Polaroid";
 import Note from "./Note";
 import MemoryModal from "./MemoryModal";
@@ -31,47 +32,53 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
 
   return (
     <>
-      <div 
-        className="w-full h-full overflow-hidden bg-background relative"
-        ref={constraintsRef}
-      >
-        <div className="absolute inset-0 bg-noise opacity-50 pointer-events-none" />
+      <div className="w-full h-full overflow-hidden bg-background relative">
+        <div className="absolute inset-0 bg-noise opacity-50 pointer-events-none z-0" />
         
-        <motion.div 
-          className="w-[4000px] h-[3000px] cursor-grab active:cursor-grabbing relative"
-          drag
-          dragConstraints={constraintsRef}
-          dragElastic={0.1}
-          dragMomentum={true}
-          dragTransition={{ bounceStiffness: 100, bounceDamping: 20, power: 0.2 }}
-          initial={{ x: -500, y: -200 }}
+        <TransformWrapper
+          initialScale={1}
+          initialPositionX={-500}
+          initialPositionY={-200}
+          minScale={0.3}
+          maxScale={2}
+          limitToBounds={false}
+          panning={{ excludedClasses: ["cursor-grab"] }}
+          wheel={{ step: 0.1 }}
+          doubleClick={{ disabled: true }}
         >
-          <TimelineSection position={timelinePos} memories={timelineMemories} />
-          <FutureSection position={futurePos} memories={futureMemories} />
-          
-          <LoveLetterDrawer 
-            memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
-            onClick={setSelectedMemory} 
-          />
+          <TransformComponent wrapperClass="!w-full !h-full z-10" contentClass="w-[4000px] h-[3000px] cursor-grab active:cursor-grabbing">
+            <div 
+              className="w-full h-full relative"
+              ref={constraintsRef}
+            >
+              <TimelineSection position={timelinePos} memories={timelineMemories} />
+              <FutureSection position={futurePos} memories={futureMemories} />
+              
+              <LoveLetterDrawer 
+                memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
+                onClick={setSelectedMemory} 
+              />
 
-          {initialMemories.map((m) => {
-            // Reformat to match what components expect
-            const memory = {
-              ...m,
-              position: { x: m.posX, y: m.posY },
-              imageUrl: m.imageBase64 || m.imageUrl,
-              song: m.songSpotifyId ? { spotifyId: m.songSpotifyId } : null
-            };
+              {initialMemories.map((m) => {
+                // Reformat to match what components expect
+                const memory = {
+                  ...m,
+                  position: { x: m.posX, y: m.posY },
+                  imageUrl: m.imageBase64 || m.imageUrl,
+                  song: m.songSpotifyId ? { spotifyId: m.songSpotifyId } : null
+                };
 
-            if (memory.type === "photo") {
-              return <Polaroid key={memory.id} memory={memory} onClick={setSelectedMemory} />;
-            }
-            if (memory.type === "note") {
-              return <Note key={memory.id} memory={memory} onClick={setSelectedMemory} />;
-            }
-            return null;
-          })}
-        </motion.div>
+                if (memory.type === "photo") {
+                  return <Polaroid key={memory.id} memory={memory} onClick={setSelectedMemory} />;
+                }
+                if (memory.type === "note") {
+                  return <Note key={memory.id} memory={memory} onClick={setSelectedMemory} />;
+                }
+                return null;
+              })}
+            </div>
+          </TransformComponent>
+        </TransformWrapper>
       </div>
 
       <MemoryModal 
