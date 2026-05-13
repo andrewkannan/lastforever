@@ -5,16 +5,17 @@ import { motion } from "framer-motion";
 interface FutureProps {
   position: { x: number; y: number };
   memories: any[];
+  onClickItem?: (memory: any) => void;
 }
 
-export default function FutureSection({ position, memories }: FutureProps) {
+export default function FutureSection({ position, memories, onClickItem }: FutureProps) {
   // Use DB memories or fallback if empty
-  const dreams = memories.length > 0 ? memories.map(m => m.caption) : [
-    "A cozy home with a large kitchen",
-    "Kids running in the backyard",
-    "Sunday morning pancakes",
-    "Growing old together",
-    "Serving God as a family"
+  const dreams = memories.length > 0 ? memories : [
+    { caption: "A cozy home with a large kitchen" },
+    { caption: "Kids running in the backyard" },
+    { caption: "Sunday morning pancakes" },
+    { caption: "Growing old together" },
+    { caption: "Serving God as a family" }
   ];
 
   return (
@@ -32,13 +33,14 @@ export default function FutureSection({ position, memories }: FutureProps) {
       <h2 className="font-serif text-5xl text-ink mb-12 text-center text-shadow-soft">Our Future Vision</h2>
       
       <div className="flex flex-wrap gap-4 justify-center">
-        {dreams.map((dream, index) => (
+        {dreams.map((dreamMemory, index) => (
           <motion.div
             key={index}
             whileHover={{ scale: 1.05, y: -5 }}
-            className="px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/40 font-hand text-2xl text-ink"
+            className={`px-6 py-3 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-white/40 font-hand text-2xl text-ink ${onClickItem ? 'cursor-pointer hover:bg-white/80 transition' : ''}`}
+            onClick={() => onClickItem && onClickItem(dreamMemory)}
           >
-            {dream}
+            {dreamMemory.caption}
           </motion.div>
         ))}
       </div>

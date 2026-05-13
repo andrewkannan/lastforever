@@ -7,10 +7,15 @@ import Polaroid from "./Polaroid";
 import Note from "./Note";
 import MemoryModal from "./MemoryModal";
 import LoveLetterDrawer from "./LoveLetterDrawer";
-import TimelineSection from "./TimelineSection";
-import FutureSection from "./FutureSection";
-
-export default function MemoryBoard({ initialMemories }: { initialMemories: any[] }) {
+export default function MemoryBoard({ 
+  initialMemories,
+  isAdmin = false,
+  onEdit
+}: { 
+  initialMemories: any[],
+  isAdmin?: boolean,
+  onEdit?: (memory: any) => void
+}) {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const [selectedMemory, setSelectedMemory] = useState<any | null>(null);
 
@@ -29,6 +34,14 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
 
   const timelineMemories = initialMemories.filter(m => m.type === "timeline").sort((a, b) => (a.date || "").localeCompare(b.date || ""));
   const futureMemories = initialMemories.filter(m => m.type === "future");
+
+  const handleItemClick = (memory: any) => {
+    if (isAdmin && onEdit) {
+      onEdit(memory);
+    } else {
+      setSelectedMemory(memory);
+    }
+  };
 
   return (
     <>
@@ -51,12 +64,20 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
               className="w-full h-full relative"
               ref={constraintsRef}
             >
-              <TimelineSection position={timelinePos} memories={timelineMemories} />
-              <FutureSection position={futurePos} memories={futureMemories} />
+              <TimelineSection 
+                position={timelinePos} 
+                memories={timelineMemories} 
+                onClickItem={isAdmin ? onEdit : undefined}
+              />
+              <FutureSection 
+                position={futurePos} 
+                memories={futureMemories} 
+                onClickItem={isAdmin ? onEdit : undefined}
+              />
               
               <LoveLetterDrawer 
                 memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
-                onClick={setSelectedMemory} 
+                onClick={handleItemClick} 
               />
 
               {initialMemories.map((m) => {
@@ -69,10 +90,10 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
                 };
 
                 if (memory.type === "photo") {
-                  return <Polaroid key={memory.id} memory={memory} onClick={setSelectedMemory} />;
+                  return <Polaroid key={memory.id} memory={memory} onClick={handleItemClick} />;
                 }
                 if (memory.type === "note") {
-                  return <Note key={memory.id} memory={memory} onClick={setSelectedMemory} />;
+                  return <Note key={memory.id} memory={memory} onClick={handleItemClick} />;
                 }
                 return null;
               })}
@@ -81,10 +102,12 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
         </TransformWrapper>
       </div>
 
-      <MemoryModal 
-        memory={selectedMemory} 
-        onClose={() => setSelectedMemory(null)} 
-      />
+      {!isAdmin && (
+        <MemoryModal 
+          memory={selectedMemory} 
+          onClose={() => setSelectedMemory(null)} 
+        />
+      )}
     </>
   );
 }

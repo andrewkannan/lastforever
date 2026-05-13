@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 interface TimelineProps {
   position: { x: number; y: number };
   memories: any[];
+  onClickItem?: (memory: any) => void;
 }
 
-export default function TimelineSection({ position, memories }: TimelineProps) {
+export default function TimelineSection({ position, memories, onClickItem }: TimelineProps) {
   // Use DB memories or fallback if empty
   const milestones = memories.length > 0 ? memories : [
     { date: "2022", caption: "First Meeting" },
@@ -28,7 +29,11 @@ export default function TimelineSection({ position, memories }: TimelineProps) {
       
       <div className="relative w-full flex flex-col gap-16 pl-8 border-l border-ink/20">
         {milestones.map((milestone, index) => (
-          <div key={index} className="relative flex items-center">
+          <div 
+            key={index} 
+            className={`relative flex items-center ${onClickItem ? 'cursor-pointer hover:opacity-70 transition' : ''}`}
+            onClick={() => onClickItem && onClickItem(milestone)}
+          >
             {/* Glowing dot */}
             <div className="absolute -left-[41px] w-5 h-5 rounded-full bg-rose-soft shadow-[0_0_15px_rgba(230,200,200,0.8)] border-2 border-white" />
             
