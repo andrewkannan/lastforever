@@ -18,7 +18,6 @@ export default function Polaroid({ memory, onClick }: PolaroidProps) {
     <motion.div
       drag
       dragMomentum={false}
-      style={{ x, y, touchAction: "none" }}
       onDragEnd={async () => {
         await updateMemoryPosition(memory.id, x.get(), y.get());
       }}
@@ -37,7 +36,11 @@ export default function Polaroid({ memory, onClick }: PolaroidProps) {
         opacity: { duration: 1 }
       }}
       onClick={() => onClick(memory)}
-      className="absolute bg-paper p-4 pb-12 polaroid-shadow cursor-grab active:cursor-grabbing w-[300px] flex flex-col gap-3 group"
+      className="absolute p-4 pb-16 bg-white w-[300px] cursor-grab active:cursor-grabbing flex flex-col gap-3 group"
+      style={{
+        x, y, touchAction: "none",
+        boxShadow: "0 15px 35px -5px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.05)"
+      }}
     >
       {/* Tape texture overlay mock */}
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-sm rotate-[-2deg] shadow-sm z-10" />

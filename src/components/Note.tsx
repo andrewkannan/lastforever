@@ -17,11 +17,18 @@ export default function Note({ memory, onClick }: NoteProps) {
     <motion.div
       drag
       dragMomentum={false}
-      style={{ x, y, touchAction: "none" }}
+      style={{ 
+        x, y, touchAction: "none",
+        boxShadow: "2px 5px 15px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05)"
+      }}
       onDragEnd={async () => {
         await updateMemoryPosition(memory.id, x.get(), y.get());
       }}
-      whileHover={{ scale: 1.05, zIndex: 100 }}
+      whileHover={{ 
+        scale: 1.05, 
+        zIndex: 100,
+        boxShadow: "5px 15px 30px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.1)"
+      }}
       whileTap={{ scale: 0.95, zIndex: 100 }}
       initial={{ 
         rotate: memory.rotation,
@@ -36,7 +43,7 @@ export default function Note({ memory, onClick }: NoteProps) {
         opacity: { duration: 1 }
       }}
       onClick={() => onClick(memory)}
-      className="absolute bg-[#FFF9C4] p-6 paper-shadow cursor-grab active:cursor-grabbing w-[250px] flex flex-col items-center justify-center group"
+      className="absolute bg-[#FFF9C4] p-6 cursor-grab active:cursor-grabbing w-[250px] flex flex-col items-center justify-center group hover:z-50 transition-shadow duration-300"
     >
       <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-red-400 rounded-full shadow-sm z-10" />
 

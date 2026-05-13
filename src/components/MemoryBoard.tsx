@@ -9,6 +9,7 @@ import MemoryModal from "./MemoryModal";
 import LoveLetterDrawer from "./LoveLetterDrawer";
 import TimelineSection from "./TimelineSection";
 import FutureSection from "./FutureSection";
+import EnvironmentLayers from "./EnvironmentLayers";
 
 export default function MemoryBoard({ 
   initialMemories,
@@ -49,7 +50,7 @@ export default function MemoryBoard({
   return (
     <>
       <div className="w-full h-full overflow-hidden bg-background relative">
-        <div className="absolute inset-0 bg-noise opacity-50 pointer-events-none z-0" />
+        <EnvironmentLayers />
         
         <TransformWrapper
           initialScale={1}

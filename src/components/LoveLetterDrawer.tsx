@@ -69,7 +69,8 @@ export default function LoveLetterDrawer({ memory, onClick }: LoveLetterDrawerPr
             rotate: isOpen ? -5 : 0
           }}
           transition={{ duration: 0.6, ease: "backOut" }}
-          className="absolute -top-10 left-1/2 -translate-x-1/2 w-[200px] h-[150px] bg-paper shadow-md rounded-t-sm z-[-1] flex flex-col p-4"
+          className="absolute -top-10 left-1/2 -translate-x-1/2 w-[200px] h-[150px] bg-paper rounded-t-sm z-[-1] flex flex-col p-4"
+          style={{ boxShadow: "0 -10px 20px -5px rgba(0,0,0,0.15)" }}
         >
           <div className="w-full h-[2px] bg-blue-200/50 mb-2" />
           <div className="w-full h-[2px] bg-blue-200/50 mb-2" />
