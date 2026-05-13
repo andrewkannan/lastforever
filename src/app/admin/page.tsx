@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getMemories, addMemory, deleteMemory, editMemory } from "@/actions/memoryActions";
-import { Trash2, Plus, LogIn, Pencil, X } from "lucide-react";
+import { Trash2, Plus, LogIn, Pencil, X, Settings } from "lucide-react";
 import MemoryBoard from "@/components/MemoryBoard";
 
 export default function AdminPage() {
@@ -92,6 +92,18 @@ export default function AdminPage() {
     <div className="w-screen h-screen relative overflow-hidden bg-background">
       <MemoryBoard initialMemories={memories} isAdmin={true} onEdit={startEdit} />
 
+      {/* Global Settings Button */}
+      <button 
+        onClick={() => {
+          const settingsMem = memories.find(m => m.type === "settings") || { type: "settings" };
+          setEditingMemory(settingsMem);
+          setIsAdding(true);
+        }}
+        className="absolute bottom-8 left-8 bg-white/80 backdrop-blur-sm text-ink p-4 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.15)] hover:scale-105 transition-transform z-50 flex items-center justify-center"
+      >
+        <Settings size={24} />
+      </button>
+
       {/* Floating Action Button for Add */}
       <button 
         onClick={() => {
@@ -119,7 +131,9 @@ export default function AdminPage() {
             </button>
 
             <form key={editingMemory ? editingMemory.id : "new"} onSubmit={handleAdd} data-memory-type={editingMemory?.type || "photo"} className="p-8 flex flex-col gap-6">
-              <h2 className="font-sans text-xl font-bold text-ink pr-8">{editingMemory ? "Edit Memory / Item" : "Add New Memory / Item"}</h2>
+              <h2 className="font-sans text-xl font-bold text-ink pr-8">
+                {editingMemory?.type === "settings" ? "Global Settings" : (editingMemory ? "Edit Memory / Item" : "Add New Memory / Item")}
+              </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
@@ -128,24 +142,27 @@ export default function AdminPage() {
                     const form = e.target.form;
                     if (form) {
                       form.dataset.memoryType = e.target.value;
-                      // Trigger a re-render to update UI
                       setMemories([...memories]); 
                     }
                   }}>
                     <option value="photo">Photo (Polaroid)</option>
-                    <option value="note">Sticky Note</option>
+                    <option value="note">Hidden Easter Egg (Flower)</option>
                     <option value="letter">Love Letter</option>
                     <option value="timeline">Timeline Milestone</option>
                     <option value="future">Future Dream</option>
+                    <option value="cassette">Cassette (Voice Note)</option>
+                    {editingMemory?.type === "settings" && <option value="settings">Global Settings</option>}
                   </select>
                 </div>
 
-                {/* Hide Date for Notes, Letters, Future. Show for Photo and Timeline. */}
+                {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings. */}
                 <div className="flex flex-col gap-2" style={{ 
-                  display: typeof document !== "undefined" && ["note", "letter", "future"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
+                  display: typeof document !== "undefined" && ["note", "letter", "future", "cassette"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
-                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : "Date"}
+                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : (
+                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "Anniversary Date" : "Date"
+                    )}
                   </label>
                   <input name="date" type="text" defaultValue={editingMemory?.date || ""} placeholder="e.g. October 14, 2023" className="p-3 border rounded bg-transparent text-ink" />
                 </div>
@@ -158,30 +175,37 @@ export default function AdminPage() {
                   <input name="location" type="text" defaultValue={editingMemory?.location || ""} placeholder="e.g. Malibu, CA" className="p-3 border rounded bg-transparent text-ink" />
                 </div>
 
-                {/* Hide Image Upload for everything except Photo */}
+                {/* Hide Media Upload for everything except Photo, Cassette, Settings */}
                 <div className="flex flex-col gap-2" style={{ 
-                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "photo" && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
+                  display: typeof document !== "undefined" && !["photo", "cassette", "settings"].includes(document.querySelector('form')?.dataset.memoryType || "photo") && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
                 }}>
-                  <label className="text-sm font-bold text-ink-light">Image Upload {editingMemory?.imageBase64 && "(Optional: leave blank to keep current image)"}</label>
-                  <input name="image" type="file" accept="image/*" className="p-3 border rounded bg-transparent text-ink" />
+                  <label className="text-sm font-bold text-ink-light">
+                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "cassette" ? "Voice Note Upload (.mp3, .wav)" : "Image / Audio Upload"} 
+                    {editingMemory?.imageBase64 && " (Optional: leave blank to keep current)"}
+                  </label>
+                  <input name="image" type="file" accept="image/*,audio/*" className="p-3 border rounded bg-transparent text-ink" />
                 </div>
                 
-                <div className="flex flex-col gap-2 md:col-span-2">
+                <div className="flex flex-col gap-2 md:col-span-2" style={{ 
+                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "none" : "flex" 
+                }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : "Caption or Content"}
                   </label>
                   <textarea name="caption" rows={3} defaultValue={editingMemory?.caption || editingMemory?.content || ""} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" />
                 </div>
 
-                {/* Hide Spotify for everything except Photo */}
+                {/* Spotify / Settings Fields */}
                 <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2" style={{ 
-                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "photo" && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
+                  display: typeof document !== "undefined" && !["photo", "settings"].includes(document.querySelector('form')?.dataset.memoryType || "photo") && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
                 }}>
-                  <label className="text-sm font-bold text-ink-light mb-1">Spotify Music Integration (Optional)</label>
+                  <label className="text-sm font-bold text-ink-light mb-1">
+                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "Vinyl Player Music (Spotify Track ID or Direct MP3 URL)" : "Spotify Music Integration (Optional)"}
+                  </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input name="songTitle" type="text" defaultValue={editingMemory?.songTitle || ""} placeholder="Song Title" className="p-3 border rounded bg-transparent text-ink" />
                     <input name="songArtist" type="text" defaultValue={editingMemory?.songArtist || ""} placeholder="Artist" className="p-3 border rounded bg-transparent text-ink" />
-                    <input name="songSpotifyId" type="text" defaultValue={editingMemory?.songSpotifyId || ""} placeholder="Spotify Track ID" className="p-3 border rounded bg-transparent text-ink" />
+                    <input name="songSpotifyId" type="text" defaultValue={editingMemory?.songSpotifyId || ""} placeholder="Spotify Track ID or Direct Link" className="p-3 border rounded bg-transparent text-ink" />
                   </div>
                 </div>
               </div>

@@ -10,6 +10,11 @@ import LoveLetterDrawer from "./LoveLetterDrawer";
 import TimelineSection from "./TimelineSection";
 import FutureSection from "./FutureSection";
 import EnvironmentLayers from "./EnvironmentLayers";
+import EasterEgg from "./EasterEgg";
+import VinylPlayer from "./VinylPlayer";
+import CassetteTape from "./CassetteTape";
+import RelationshipStats from "./RelationshipStats";
+import CameraRoll from "./CameraRoll";
 
 export default function MemoryBoard({ 
   initialMemories,
@@ -38,6 +43,14 @@ export default function MemoryBoard({
 
   const timelineMemories = initialMemories.filter(m => m.type === "timeline").sort((a, b) => (a.date || "").localeCompare(b.date || ""));
   const futureMemories = initialMemories.filter(m => m.type === "future");
+  const cassetteMemories = initialMemories.filter(m => m.type === "cassette");
+  const photoMemories = initialMemories.filter(m => m.type === "photo");
+
+  // Global settings for Vinyl and Relationship Stats
+  const settingsMemory = initialMemories.find(m => m.type === "settings");
+  const anniversaryDate = settingsMemory?.date || "17 march 2026";
+  const vinylAudioSrc = settingsMemory?.imageBase64 || null; // MP3 file
+  const vinylSpotifyId = settingsMemory?.songSpotifyId || null; // Spotify link
 
   const handleItemClick = (memory: any) => {
     if (isAdmin && onEdit) {
@@ -68,6 +81,14 @@ export default function MemoryBoard({
               className="w-full h-full relative"
               ref={constraintsRef}
             >
+              <RelationshipStats position={{ x: 100, y: 100 }} startDate={anniversaryDate} />
+              <VinylPlayer position={{ x: 100, y: 350 }} audioSrc={vinylAudioSrc} spotifyId={vinylSpotifyId} />
+              <CameraRoll position={{ x: 400, y: 800 }} memories={photoMemories} />
+
+              <LoveLetterDrawer 
+                memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
+                onClick={handleItemClick} 
+              />
               <TimelineSection 
                 position={timelinePos} 
                 memories={timelineMemories} 
@@ -79,13 +100,9 @@ export default function MemoryBoard({
                 onClickItem={isAdmin ? onEdit : undefined}
               />
               
-              <LoveLetterDrawer 
-                memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
-                onClick={handleItemClick} 
-              />
-
               {initialMemories.map((m) => {
-                // Reformat to match what components expect
+                if (m.type === "letter" || m.type === "timeline" || m.type === "future" || m.type === "settings") return null;
+
                 const memory = {
                   ...m,
                   position: { x: m.posX, y: m.posY },
@@ -93,11 +110,16 @@ export default function MemoryBoard({
                   song: m.songSpotifyId ? { spotifyId: m.songSpotifyId } : null
                 };
 
+                if (m.type === "note") {
+                  return <EasterEgg key={m.id} memory={memory} onClick={handleItemClick} />;
+                }
+                
+                if (m.type === "cassette") {
+                  return <CassetteTape key={m.id} memory={memory} onClick={handleItemClick} />;
+                }
+
                 if (memory.type === "photo") {
                   return <Polaroid key={memory.id} memory={memory} onClick={handleItemClick} />;
-                }
-                if (memory.type === "note") {
-                  return <Note key={memory.id} memory={memory} onClick={handleItemClick} />;
                 }
                 return null;
               })}

@@ -4,12 +4,14 @@ import { motion, useMotionValue } from "framer-motion";
 import { Memory } from "@/data/memories";
 import { updateMemoryPosition } from "@/actions/memoryActions";
 
-interface NoteProps {
+import { Flower2 } from "lucide-react";
+
+interface EasterEggProps {
   memory: Memory;
   onClick: (memory: Memory) => void;
 }
 
-export default function Note({ memory, onClick }: NoteProps) {
+export default function EasterEgg({ memory, onClick }: EasterEggProps) {
   const x = useMotionValue(memory.position.x);
   const y = useMotionValue(memory.position.y);
 
@@ -19,17 +21,18 @@ export default function Note({ memory, onClick }: NoteProps) {
       dragMomentum={false}
       style={{ 
         x, y, touchAction: "none",
-        boxShadow: "2px 5px 15px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05)"
+        filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.15))"
       }}
       onDragEnd={async () => {
         await updateMemoryPosition(memory.id, x.get(), y.get());
       }}
       whileHover={{ 
-        scale: 1.05, 
+        scale: 1.2, 
+        rotate: [0, -10, 10, -10, 10, 0],
         zIndex: 100,
-        boxShadow: "5px 15px 30px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.1)"
+        filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.2))"
       }}
-      whileTap={{ scale: 0.95, zIndex: 100 }}
+      whileTap={{ scale: 0.9, zIndex: 100 }}
       initial={{ 
         rotate: memory.rotation,
         opacity: 0,
@@ -40,16 +43,16 @@ export default function Note({ memory, onClick }: NoteProps) {
         type: "spring", 
         stiffness: 260, 
         damping: 20,
-        opacity: { duration: 1 }
+        opacity: { duration: 1 },
+        rotate: { duration: 0.5 }
       }}
       onClick={() => onClick(memory)}
-      className="absolute bg-[#FFF9C4] p-6 cursor-grab active:cursor-grabbing w-[250px] flex flex-col items-center justify-center group hover:z-50 transition-shadow duration-300"
+      className="absolute p-4 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center group hover:z-50 text-rose-soft/90 hover:text-rose-soft transition-colors"
     >
-      <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-red-400 rounded-full shadow-sm z-10" />
-
-      <p className="font-hand text-3xl text-ink leading-tight text-center">
-        {memory.content || memory.caption}
-      </p>
+      <Flower2 size={48} strokeWidth={1.5} className="fill-white/20" />
+      
+      {/* Subtle sparkling glow */}
+      <div className="absolute inset-0 bg-white/20 blur-xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
     </motion.div>
   );
 }
