@@ -42,7 +42,7 @@ export default function MemoryBoard({ initialMemories }: { initialMemories: any[
           minScale={0.3}
           maxScale={2}
           limitToBounds={false}
-          panning={{ excludedClasses: ["cursor-grab"] }}
+          panning={{ excluded: ["cursor-grab"] }}
           wheel={{ step: 0.1 }}
           doubleClick={{ disabled: true }}
         >
