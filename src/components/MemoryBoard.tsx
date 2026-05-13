@@ -7,6 +7,9 @@ import Polaroid from "./Polaroid";
 import Note from "./Note";
 import MemoryModal from "./MemoryModal";
 import LoveLetterDrawer from "./LoveLetterDrawer";
+import TimelineSection from "./TimelineSection";
+import FutureSection from "./FutureSection";
+
 export default function MemoryBoard({ 
   initialMemories,
   isAdmin = false,
