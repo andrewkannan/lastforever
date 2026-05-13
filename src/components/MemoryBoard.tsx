@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Polaroid from "./Polaroid";
-import Note from "./Note";
 import MemoryModal from "./MemoryModal";
 import LoveLetterDrawer from "./LoveLetterDrawer";
 import TimelineSection from "./TimelineSection";
