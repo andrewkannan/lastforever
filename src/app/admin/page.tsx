@@ -42,7 +42,8 @@ export default function AdminPage() {
     const formData = new FormData(e.currentTarget);
     
     let res;
-    if (editingMemory) {
+    // Check if editing a real memory from DB, not a fallback placeholder
+    if (editingMemory && editingMemory.id && editingMemory.id !== "drawer") {
       res = await editMemory(editingMemory.id, formData);
     } else {
       res = await addMemory(formData);
@@ -186,7 +187,7 @@ export default function AdminPage() {
               </div>
 
               <div className="flex justify-between items-center mt-4">
-                {editingMemory ? (
+                {editingMemory && editingMemory.id && editingMemory.id !== "drawer" ? (
                   <button 
                     type="button"
                     onClick={async () => {
