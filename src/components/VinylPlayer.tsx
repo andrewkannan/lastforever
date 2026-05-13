@@ -66,14 +66,15 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, audioSrc, s
       </div>
 
       {hasSpotify ? (
-        <div className="w-full h-[80px] rounded overflow-hidden">
+        <div className="w-full h-[152px] rounded-xl overflow-hidden shadow-inner">
           <iframe 
             src={`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`} 
             width="100%" 
-            height="100%" 
+            height="152" 
             frameBorder="0" 
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
             loading="lazy"
+            style={{ borderRadius: '12px' }}
           ></iframe>
         </div>
       ) : (

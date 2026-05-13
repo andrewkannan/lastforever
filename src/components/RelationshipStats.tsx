@@ -7,9 +7,11 @@ import { Heart } from "lucide-react";
 interface RelationshipStatsProps {
   position?: { x: number; y: number };
   startDate?: string | null;
+  isAdmin?: boolean;
+  onEdit?: () => void;
 }
 
-export default function RelationshipStats({ position = { x: 50, y: 50 }, startDate }: RelationshipStatsProps) {
+export default function RelationshipStats({ position = { x: 50, y: 50 }, startDate, isAdmin, onEdit }: RelationshipStatsProps) {
   const x = useMotionValue(position.x);
   const y = useMotionValue(position.y);
   
@@ -58,9 +60,20 @@ export default function RelationshipStats({ position = { x: 50, y: 50 }, startDa
         {days.toLocaleString()}
       </div>
       
-      <p className="font-hand text-xl text-ink/70 mt-2">
-        Since {startDate}
-      </p>
+      <div className="flex items-center gap-2 mt-2">
+        <p className="font-hand text-xl text-ink/70">
+          Since {startDate}
+        </p>
+        {isAdmin && (
+          <button 
+            onClick={onEdit}
+            className="text-ink-light hover:text-rose-500 transition-colors p-1"
+            title="Edit Date"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 }

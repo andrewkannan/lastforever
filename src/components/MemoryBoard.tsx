@@ -80,7 +80,12 @@ export default function MemoryBoard({
               className="w-full h-full relative"
               ref={constraintsRef}
             >
-              <RelationshipStats position={{ x: 100, y: 100 }} startDate={anniversaryDate} />
+              <RelationshipStats 
+                position={{ x: 100, y: 100 }} 
+                startDate={anniversaryDate} 
+                isAdmin={isAdmin}
+                onEdit={() => isAdmin && onEdit && onEdit(settingsMemory || { type: "settings", date: anniversaryDate })}
+              />
               <VinylPlayer position={{ x: 100, y: 350 }} audioSrc={vinylAudioSrc} spotifyId={vinylSpotifyId} />
               <CameraRoll position={{ x: 400, y: 800 }} memories={photoMemories} />
 
