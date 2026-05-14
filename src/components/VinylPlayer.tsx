@@ -24,14 +24,15 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const currentSong = songs[currentIndex];
+  const currentSongSrc = currentSong?.src;
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
 
-    if (currentSong) {
-      audioRef.current = new Audio(currentSong.src);
+    if (currentSongSrc) {
+      audioRef.current = new Audio(currentSongSrc);
       
       // Auto-play next song when ended
       audioRef.current.onended = () => {
@@ -49,7 +50,7 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] 
         audioRef.current.src = "";
       }
     };
-  }, [currentIndex, currentSong]);
+  }, [currentIndex, currentSongSrc]);
 
   // Keep audio play state in sync
   useEffect(() => {
