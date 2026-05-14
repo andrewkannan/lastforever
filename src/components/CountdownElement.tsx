@@ -69,7 +69,7 @@ export default function CountdownElement({ memory, onClick }: CountdownElementPr
       {/* Countdown Box */}
       {daysRemaining !== null && (
         <div className="bg-white/90 backdrop-blur-md px-8 py-3 rounded-full border border-rose-soft/30 shadow-lg mb-6 z-20 flex items-center justify-center gap-2">
-          <span className="font-serif text-3xl font-bold text-rose-soft">
+          <span className="font-serif text-3xl font-bold text-rose-700">
             {daysRemaining}
           </span>
           <span className="font-sans text-ink-light tracking-widest uppercase text-sm mt-1">

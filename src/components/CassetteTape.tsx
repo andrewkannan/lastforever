@@ -22,9 +22,22 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
   // Audio API Refs
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const animationRef = useRef<number | null>(null);
   const barsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Particle System
+  const [particles, setParticles] = useState<{ id: number, delay: number, duration: number, angle: number }[]>([]);
+
+  useEffect(() => {
+    // Generate 12 heart bubble particles
+    const newParticles = Array.from({ length: 12 }).map((_, i) => ({
+      id: i,
+      delay: Math.random() * 2,
+      duration: 2 + Math.random() * 2,
+      angle: Math.PI + (Math.random() * Math.PI), // Fly upwards
+    }));
+    setParticles(newParticles);
+  }, []);
 
   useEffect(() => {
     if (memory.imageUrl) {
@@ -64,18 +77,17 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
 
   const initAudioNodes = () => {
     if (!audioContextRef.current && audioRef.current) {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      const audioCtx = new AudioCtx();
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64; // Small size for just a few bins
-      
       const source = audioCtx.createMediaElementSource(audioRef.current);
+      
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
-
+      
+      analyser.fftSize = 32;
+      
       audioContextRef.current = audioCtx;
       analyserRef.current = analyser;
-      sourceRef.current = source;
     }
   };
 
@@ -85,18 +97,10 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
     const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
     analyserRef.current.getByteFrequencyData(dataArray);
     
-    // We have 6 bars, divide the frequency bins into 6 chunks
-    const step = Math.max(1, Math.floor(dataArray.length / 6));
-    
+    // We only have 6 bars, take first 6 frequency bins
     for (let i = 0; i < 6; i++) {
-      let sum = 0;
-      for (let j = 0; j < step; j++) {
-        sum += dataArray[i * step + j] || 0;
-      }
-      const avg = sum / step;
-      // Map 0-255 to 20%-100% height
-      const percentage = 20 + (avg / 255) * 80;
-      
+      const value = dataArray[i];
+      const percentage = Math.max(20, (value / 255) * 100);
       if (barsRef.current[i]) {
         barsRef.current[i]!.style.height = `${percentage}%`;
       }
@@ -149,46 +153,79 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
         damping: 20
       }}
       onClick={onClick ? () => onClick(memory) : undefined}
-      className="absolute p-4 pb-6 bg-white/80 backdrop-blur-md rounded-lg cursor-grab active:cursor-grabbing hover:z-50 transition-shadow duration-300 w-[280px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] group border border-white/40 flex flex-col items-center"
+      className="absolute flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:z-50 group w-[320px] h-[220px]"
     >
-      {/* Cassette Shape details */}
-      <div className="w-full bg-[#3a3a3a] rounded-sm p-3 relative shadow-inner overflow-hidden flex flex-col items-center">
-        {/* Top Screw Holes */}
-        <div className="absolute top-2 left-2 w-2 h-2 rounded-full bg-black/40 shadow-inner" />
-        <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-black/40 shadow-inner" />
-        <div className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-black/40 shadow-inner" />
-        <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-black/40 shadow-inner" />
+      {/* Particle Effects (Heart Bubbles) */}
+      <div className="absolute inset-0 z-[-1] pointer-events-none overflow-visible flex items-center justify-center">
+        {isPlaying && particles.map((p) => {
+          const distance = 80 + Math.random() * 120;
+          return (
+            <motion.img
+              key={p.id}
+              src="/heart-bubble.png"
+              className="absolute w-10 h-10 object-contain drop-shadow-md mix-blend-multiply"
+              initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+              animate={{
+                x: [0, Math.cos(p.angle) * distance],
+                y: [0, Math.sin(p.angle) * distance],
+                opacity: [0, 0.9, 0],
+                scale: [0.3, 1.2, 0.5],
+              }}
+              transition={{
+                duration: p.duration,
+                delay: p.delay,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+            />
+          );
+        })}
+      </div>
 
-        {/* Cassette Label */}
-        <div className="w-[85%] bg-yellow-100/90 rounded px-4 py-2 flex flex-col items-center shadow-sm relative z-10 border-t-8 border-orange-300">
-          <p className="font-hand text-xl text-ink leading-tight mb-2 text-center truncate w-full">
+      {/* Cassette Shell - Premium Transparent Glassmorphism Aesthetic */}
+      <div className="w-[300px] bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-4 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex flex-col items-center relative overflow-hidden">
+        
+        {/* Screw Details */}
+        <div className="absolute top-3 left-3 w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner" /></div>
+        <div className="absolute top-3 right-3 w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner" /></div>
+        <div className="absolute bottom-3 left-3 w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner" /></div>
+        <div className="absolute bottom-3 right-3 w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner" /></div>
+
+        {/* Cassette Sticker/Label */}
+        <div className="w-[85%] bg-gradient-to-b from-[#ffeed3] to-[#ffe0b2] rounded-md px-4 py-3 flex flex-col items-center shadow-md relative z-10 border-t-[12px] border-rose-soft border-b-[6px] border-amber-500/50">
+          <p className="font-hand text-2xl text-ink font-bold leading-tight mb-3 text-center truncate w-full">
             {memory.caption || "Voice Note"}
           </p>
 
-          {/* Tape reels area */}
-          <div className="flex items-center justify-between w-full px-2 mt-1 mb-2 bg-[#e0d6c0] py-2 rounded-full shadow-inner border border-black/10">
+          {/* Tape Reels Center Area */}
+          <div className="flex items-center justify-between w-[90%] px-3 mt-1 mb-2 bg-[#d1c4a9] py-2 rounded-full shadow-[inset_0_3px_8px_rgba(0,0,0,0.3)] border border-white/50 relative">
+            
+            {/* Magnetic Tape Spool Line (Visual) */}
+            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-black/20 -translate-y-1/2 z-0" />
+
             {/* Left Reel */}
             <motion.div 
               animate={{ rotate: isPlaying ? 360 : 0 }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center relative overflow-hidden shadow-inner"
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-100 to-white border-2 border-gray-400 flex items-center justify-center relative overflow-hidden shadow-lg z-10"
             >
-              <div className="w-4 h-4 rounded-full bg-gray-200 shadow-inner z-10" />
+              <div className="w-4 h-4 rounded-full bg-gray-300 shadow-inner z-20 flex items-center justify-center border border-gray-400"><div className="w-1 h-1 bg-gray-600 rounded-full" /></div>
               {/* Spokes */}
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-0" />
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-60" />
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-120" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-0 z-10" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-60 z-10" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-120 z-10" />
+              {/* Tape wound on reel */}
+              <div className="absolute inset-1 rounded-full border-[3px] border-[#222]" />
             </motion.div>
 
-            {/* Viewport for tape */}
-            <div className="w-12 h-6 bg-black/80 rounded-sm relative overflow-hidden flex items-end justify-center px-1">
-              {/* Waveform Animation */}
-              <div className="flex items-end gap-[2px] h-full pb-1">
+            {/* Viewport & Waveform */}
+            <div className="w-16 h-8 bg-[#111] rounded shadow-[inset_0_2px_5px_rgba(0,0,0,0.8)] relative overflow-hidden flex items-end justify-center px-1 border border-gray-500 z-10">
+              <div className="flex items-end gap-[3px] h-full pb-1">
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
                     ref={(el) => { barsRef.current[i] = el; }}
-                    className="w-1 bg-rose-soft/80 rounded-t-sm"
+                    className="w-1.5 bg-gradient-to-t from-rose-600 to-rose-300 rounded-t-sm shadow-[0_0_5px_rgba(255,100,100,0.5)]"
                     style={{ height: '20%', transition: 'height 50ms ease-out' }}
                   />
                 ))}
@@ -199,36 +236,39 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
             <motion.div 
               animate={{ rotate: isPlaying ? 360 : 0 }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center relative overflow-hidden shadow-inner"
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-100 to-white border-2 border-gray-400 flex items-center justify-center relative overflow-hidden shadow-lg z-10"
             >
-              <div className="w-4 h-4 rounded-full bg-gray-200 shadow-inner z-10" />
+              <div className="w-4 h-4 rounded-full bg-gray-300 shadow-inner z-20 flex items-center justify-center border border-gray-400"><div className="w-1 h-1 bg-gray-600 rounded-full" /></div>
               {/* Spokes */}
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-0" />
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-60" />
-              <div className="absolute w-full h-[2px] bg-gray-300 rotate-120" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-0 z-10" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-60 z-10" />
+              <div className="absolute w-full h-[3px] bg-gray-400/80 rotate-120 z-10" />
+              {/* Tape wound on reel */}
+              <div className="absolute inset-2 rounded-full border-2 border-[#222]" />
             </motion.div>
           </div>
         </div>
 
-        {/* Bottom trapezoid area (fake) */}
-        <div className="w-2/3 h-6 bg-[#2a2a2a] rounded-b-lg border-t-2 border-black/50 mt-1 flex justify-between px-4 items-center">
-           <div className="w-3 h-3 rounded-full bg-black/60 shadow-inner" />
-           <div className="w-3 h-3 rounded-full bg-black/60 shadow-inner" />
+        {/* Bottom Trapezoid Guard */}
+        <div className="w-[70%] h-8 bg-gradient-to-b from-[#444] to-[#222] rounded-b-xl border-t-4 border-gray-700 mt-1 flex justify-between px-6 items-center shadow-inner relative z-10">
+           <div className="w-4 h-4 rounded-full bg-black/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.9)]" />
+           <div className="w-4 h-4 rounded-full bg-black/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.9)]" />
         </div>
       </div>
 
-      <div className="mt-4 flex w-full items-center justify-between px-2">
+      {/* Floating Controls below the tape */}
+      <div className="mt-4 flex w-full max-w-[280px] items-center justify-between px-2 bg-white/70 backdrop-blur-sm rounded-full p-2 shadow-lg border border-white/50">
         <button 
           onClick={togglePlay}
-          className="bg-rose-soft text-white p-3 rounded-full shadow-md hover:scale-110 transition-transform active:scale-95 flex items-center justify-center"
+          className="bg-gradient-to-tr from-rose-600 to-rose-400 text-white p-3 rounded-full shadow-[0_4px_10px_rgba(225,29,72,0.3)] hover:scale-110 transition-transform active:scale-95 flex items-center justify-center z-20"
         >
-          {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-1" />}
+          {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
         </button>
 
-        {/* Simple Progress Bar */}
-        <div className="flex-1 ml-4 h-2 bg-ink/10 rounded-full overflow-hidden">
+        {/* Playback Progress Bar */}
+        <div className="flex-1 ml-4 h-3 bg-ink/10 rounded-full overflow-hidden shadow-inner border border-ink/5">
           <div 
-            className="h-full bg-rose-soft transition-all duration-100 ease-linear"
+            className="h-full bg-gradient-to-r from-rose-400 to-rose-600 transition-all duration-100 ease-linear rounded-full"
             style={{ width: `${progress}%` }}
           />
         </div>

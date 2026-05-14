@@ -30,7 +30,6 @@ export default function TimelineSection({ position, memories, onClickItem }: Tim
       
       {/* Floral Accents outside the backdrop-blur element */}
       <img src="/floral-timeline.png?v=2" alt="floral accent" className="absolute -top-12 -right-12 w-40 h-40 object-contain pointer-events-none z-10" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" }} />
-      <img src="/floral-timeline.png?v=2" alt="floral accent" className="absolute -bottom-12 -left-12 w-40 h-40 object-contain pointer-events-none rotate-180 z-10" style={{ transform: "translateZ(0)", WebkitTransform: "translateZ(0)" }} />
 
       <div className="relative flex flex-col items-center p-12 z-20 w-full h-full">
         <h2 className="font-serif text-4xl text-ink mb-16 tracking-widest uppercase">Our Timeline</h2>
