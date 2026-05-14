@@ -147,6 +147,7 @@ export default function AdminPage() {
                   }}>
                     <option value="photo">Photo (Polaroid)</option>
                     <option value="note">Hidden Easter Egg (Flower)</option>
+                    <option value="countdown">Day Countdown</option>
                     <option value="letter">Love Letter</option>
                     <option value="timeline">Timeline Milestone</option>
                     <option value="future">Future Dream</option>
@@ -155,13 +156,15 @@ export default function AdminPage() {
                   </select>
                 </div>
 
-                {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings. */}
+                {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings, Countdown. */}
                 <div className="flex flex-col gap-2" style={{ 
                   display: typeof document !== "undefined" && ["note", "letter", "future", "cassette"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : (
-                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "Anniversary Date" : "Date"
+                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "Anniversary Date" : (
+                        typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "countdown" ? "Target Date (e.g. 2027-02-20)" : "Date"
+                      )
                     )}
                   </label>
                   <input name="date" type="text" defaultValue={editingMemory?.date || ""} placeholder="e.g. October 14, 2023" className="p-3 border rounded bg-transparent text-ink" />
@@ -195,7 +198,9 @@ export default function AdminPage() {
                   display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
-                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : "Caption or Content"}
+                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : (
+                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "countdown" ? "Countdown Title (e.g. Our Wedding)" : "Caption or Content"
+                    )}
                   </label>
                   <textarea name="caption" rows={3} defaultValue={editingMemory?.caption || editingMemory?.content || ""} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" />
                 </div>

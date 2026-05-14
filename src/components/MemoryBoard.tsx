@@ -10,6 +10,7 @@ import TimelineSection from "./TimelineSection";
 import FutureSection from "./FutureSection";
 import EnvironmentLayers from "./EnvironmentLayers";
 import EasterEgg from "./EasterEgg";
+import CountdownElement from "./CountdownElement";
 import VinylPlayer from "./VinylPlayer";
 import CassetteTape from "./CassetteTape";
 import RelationshipStats from "./RelationshipStats";
@@ -117,6 +118,10 @@ export default function MemoryBoard({
 
                 if (m.type === "note") {
                   return <EasterEgg key={m.id} memory={memory} onClick={handleItemClick} />;
+                }
+                
+                if (m.type === "countdown") {
+                  return <CountdownElement key={m.id} memory={memory} onClick={isAdmin ? handleItemClick : undefined} />;
                 }
                 
                 if (m.type === "cassette") {
