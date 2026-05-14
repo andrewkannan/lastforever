@@ -64,9 +64,9 @@ export async function addMemory(formData: FormData) {
       imageBase64 = `data:${imageFile.type};base64,${base64Data}`;
     }
 
-    // Randomize initial position and rotation slightly to look natural
-    const posX = Math.floor(Math.random() * 2000);
-    const posY = Math.floor(Math.random() * 1500) + 200;
+    // Spawn closer to the center of the initial viewport so they are easily visible
+    const posX = 700 + Math.floor(Math.random() * 400);
+    const posY = 300 + Math.floor(Math.random() * 300);
     const rotation = (Math.random() - 0.5) * 15; // -7.5 to 7.5 degrees
 
     await prisma.memory.create({
