@@ -73,7 +73,7 @@ export default function MemoryBoard({
           maxScale={2}
           limitToBounds={false}
           panning={{ excluded: ["cursor-grab"] }}
-          wheel={{ step: 0.1 }}
+          wheel={{ step: 0.04 }}
           doubleClick={{ disabled: true }}
         >
           <TransformComponent wrapperClass="!w-full !h-full z-10" contentClass="w-[4000px] h-[3000px] cursor-grab active:cursor-grabbing">
