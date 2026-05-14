@@ -89,7 +89,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden bg-background">
+    <div className="w-screen h-screen relative overflow-hidden bg-floral-paper">
       <MemoryBoard initialMemories={memories} isAdmin={true} onEdit={startEdit} />
 
       {/* Global Settings Button */}
