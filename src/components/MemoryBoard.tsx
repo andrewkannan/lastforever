@@ -81,6 +81,7 @@ export default function MemoryBoard({
             <div 
               className="w-full h-full relative"
               ref={constraintsRef}
+              style={{ willChange: "transform", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d" }}
             >
               <RelationshipStats 
                 position={{ x: 100, y: 100 }} 
