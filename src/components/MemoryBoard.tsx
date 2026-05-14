@@ -46,11 +46,17 @@ export default function MemoryBoard({
   const cassetteMemories = initialMemories.filter(m => m.type === "cassette");
   const photoMemories = initialMemories.filter(m => m.type === "photo");
 
-  // Global settings for Vinyl and Relationship Stats
+  // Global settings for Relationship Stats
   const settingsMemory = initialMemories.find(m => m.type === "settings");
   const anniversaryDate = settingsMemory?.date || "17 march 2026";
-  const vinylAudioSrc = settingsMemory?.imageBase64 || null; // MP3 file
-  const vinylSpotifyId = settingsMemory?.songSpotifyId || null; // Spotify link
+
+  const vinylSongs = initialMemories
+    .filter(m => m.type === "vinyl_song")
+    .map(m => ({
+      id: m.id,
+      title: m.caption || "Unknown Track",
+      src: m.imageBase64 || ""
+    }));
 
   const handleItemClick = (memory: any) => {
     if (isAdmin && onEdit) {
@@ -89,7 +95,7 @@ export default function MemoryBoard({
                 isAdmin={isAdmin}
                 onEdit={() => isAdmin && onEdit && onEdit(settingsMemory || { type: "settings", date: anniversaryDate })}
               />
-              <VinylPlayer position={{ x: 100, y: 350 }} audioSrc={vinylAudioSrc} spotifyId={vinylSpotifyId} />
+              <VinylPlayer position={{ x: 100, y: 350 }} songs={vinylSongs} />
               <CameraRoll position={{ x: 400, y: 800 }} memories={photoMemories} />
 
               <LoveLetterDrawer 

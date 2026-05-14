@@ -53,6 +53,35 @@ export async function addMemory(formData: FormData) {
     const songTitle = formData.get("songTitle") as string;
     const songArtist = formData.get("songArtist") as string;
     const songSpotifyId = formData.get("songSpotifyId") as string;
+
+    if (type === "vinyl_song") {
+      const audioFiles = formData.getAll("audioFiles") as File[];
+      if (audioFiles && audioFiles.length > 0) {
+        for (const file of audioFiles) {
+          if (file.size > 0) {
+            const buffer = await file.arrayBuffer();
+            const base64Data = Buffer.from(buffer).toString("base64");
+            const imageBase64 = `data:${file.type};base64,${base64Data}`;
+            // Use filename as initial title, strip extension
+            const title = file.name.replace(/\.[^/.]+$/, "");
+            
+            await prisma.memory.create({
+              data: {
+                type: "vinyl_song",
+                caption: title,
+                imageBase64,
+                posX: 0,
+                posY: 0,
+                rotation: 0
+              }
+            });
+          }
+        }
+        revalidatePath("/");
+        revalidatePath("/admin");
+        return { success: true };
+      }
+    }
     
     // Handle image if provided
     let imageBase64 = null;

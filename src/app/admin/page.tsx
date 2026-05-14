@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getMemories, addMemory, deleteMemory, editMemory } from "@/actions/memoryActions";
-import { Trash2, Plus, LogIn, Pencil, X, Settings } from "lucide-react";
+import { Trash2, Plus, LogIn, Pencil, X, Settings, Music } from "lucide-react";
 import MemoryBoard from "@/components/MemoryBoard";
 
 export default function AdminPage() {
@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingMemory, setEditingMemory] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isManagingVinyl, setIsManagingVinyl] = useState(false);
 
   // Authenticate
   const handleLogin = (e: React.FormEvent) => {
@@ -104,6 +105,16 @@ export default function AdminPage() {
         <Settings size={24} />
       </button>
 
+      {/* Manage Vinyl Tracks Button */}
+      <button 
+        onClick={() => {
+          setIsManagingVinyl(true);
+        }}
+        className="absolute bottom-8 left-24 bg-white/80 backdrop-blur-sm text-ink p-4 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.15)] hover:scale-105 transition-transform z-50 flex items-center justify-center"
+      >
+        <Music size={24} />
+      </button>
+
       {/* Floating Action Button for Add */}
       <button 
         onClick={() => {
@@ -148,6 +159,7 @@ export default function AdminPage() {
                     <option value="photo">Photo (Polaroid)</option>
                     <option value="note">Hidden Easter Egg (Flower)</option>
                     <option value="countdown">Day Countdown</option>
+                    <option value="vinyl_song">Vinyl Track(s)</option>
                     <option value="letter">Love Letter</option>
                     <option value="timeline">Timeline Milestone</option>
                     <option value="future">Future Dream</option>
@@ -158,7 +170,7 @@ export default function AdminPage() {
 
                 {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings, Countdown. */}
                 <div className="flex flex-col gap-2" style={{ 
-                  display: typeof document !== "undefined" && ["note", "letter", "future", "cassette"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
+                  display: typeof document !== "undefined" && ["note", "letter", "future", "cassette", "vinyl_song"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : (
@@ -193,13 +205,24 @@ export default function AdminPage() {
                     className="p-3 border rounded bg-transparent text-ink" 
                   />
                 </div>
+
+                {/* Vinyl Track Upload */}
+                <div className="flex flex-col gap-2 md:col-span-2" style={{ 
+                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "vinyl_song" && !editingMemory ? "flex" : "none" 
+                }}>
+                  <label className="text-sm font-bold text-ink-light">Upload MP3 Songs (Select up to 10)</label>
+                  <input name="audioFiles" type="file" multiple accept="audio/*" className="p-3 border rounded bg-transparent text-ink" />
+                  <p className="text-xs text-ink-light mt-1">Hold Ctrl/Cmd to select multiple files.</p>
+                </div>
                 
                 <div className="flex flex-col gap-2 md:col-span-2" style={{ 
-                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "none" : "flex" 
+                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "none" : (typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "vinyl_song" && !editingMemory ? "none" : "flex") 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : (
-                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "countdown" ? "Countdown Title (e.g. Our Wedding)" : "Caption or Content"
+                      typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "countdown" ? "Countdown Title (e.g. Our Wedding)" : (
+                        typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "vinyl_song" ? "Song Title" : "Caption or Content"
+                      )
                     )}
                   </label>
                   <textarea name="caption" rows={3} defaultValue={editingMemory?.caption || editingMemory?.content || ""} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" />
@@ -241,6 +264,59 @@ export default function AdminPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Vinyl Track Manager Modal */}
+      {isManagingVinyl && (
+        <div className="absolute inset-0 bg-ink/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar relative p-8">
+            <button 
+              onClick={() => setIsManagingVinyl(false)}
+              className="absolute top-6 right-6 text-ink-light hover:text-ink transition z-10 bg-white/80 p-2 rounded-full"
+            >
+              <X size={24} />
+            </button>
+            <h2 className="font-serif text-2xl font-bold text-ink mb-6 border-b pb-4 flex items-center gap-2">
+              <Music className="text-rose-soft" /> Manage Vinyl Tracks
+            </h2>
+            
+            <div className="flex flex-col gap-4">
+              {memories.filter(m => m.type === "vinyl_song").length === 0 ? (
+                <p className="text-ink-light italic text-center py-8">No tracks uploaded yet. Click the + button and choose "Vinyl Track(s)" to upload MP3s.</p>
+              ) : (
+                memories.filter(m => m.type === "vinyl_song").map(song => (
+                  <div key={song.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-paper p-4 rounded border border-ink/10 gap-4">
+                    <form 
+                      className="flex-1 flex gap-2 w-full"
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const formData = new FormData(e.currentTarget);
+                        await editMemory(song.id, formData);
+                        fetchMemories();
+                        alert("Title updated!");
+                      }}
+                    >
+                      <input type="hidden" name="type" value="vinyl_song" />
+                      <input 
+                        type="text" 
+                        name="caption" 
+                        defaultValue={song.caption || "Unknown Track"} 
+                        className="flex-1 p-2 border border-ink/20 rounded bg-white text-sm focus:outline-none focus:border-ink"
+                      />
+                      <button type="submit" className="text-xs bg-ink text-paper px-4 py-2 rounded hover:bg-ink-light font-bold">Save Title</button>
+                    </form>
+                    <button 
+                      onClick={() => handleDelete(song.id)}
+                      className="text-red-500 hover:bg-red-50 p-2 rounded flex-shrink-0"
+                      title="Delete Track"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
