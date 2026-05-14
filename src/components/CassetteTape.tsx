@@ -183,7 +183,7 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
       </div>
 
       {/* Cassette Shell - Premium Transparent Glassmorphism Aesthetic */}
-      <div className="w-[300px] bg-white/40 backdrop-blur-xl border border-white/60 rounded-xl p-4 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex flex-col items-center relative overflow-hidden">
+      <div className="w-[300px] bg-white/40 backdrop-blur-xl border-4 border-white/80 outline outline-2 outline-rose-300/30 rounded-xl p-4 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] flex flex-col items-center relative overflow-hidden">
         
         {/* Screw Details */}
         <div className="absolute top-3 left-3 w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 shadow-inner flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner" /></div>
