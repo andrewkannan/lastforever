@@ -63,13 +63,18 @@ export default function EasterEgg({ memory, onClick }: EasterEggProps) {
         rotate: { duration: 0.5 }
       }}
       onClick={() => onClick(memory)}
-      className="absolute p-4 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center group hover:z-50 transition-colors"
+      className="absolute p-4 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center group hover:z-50 transition-colors z-[999]"
     >
-      <img 
-        src={`/flowers/${flowerName}.png`} 
-        alt={flowerName}
-        className="w-20 h-20 object-contain pointer-events-none drop-shadow-md" 
-      />
+      <div className="absolute -top-10 bg-red-500 text-white font-bold p-2 rounded whitespace-nowrap z-[1000]">
+        EGG! x:{memory.position.x} y:{memory.position.y}
+      </div>
+      <div className="bg-red-200/50 rounded-full p-2 border-4 border-red-500">
+        <img 
+          src={`/flowers/${flowerName}.png`} 
+          alt={flowerName}
+          className="w-20 h-20 object-contain pointer-events-none drop-shadow-md" 
+        />
+      </div>
       
       {/* Subtle sparkling glow */}
       <div className="absolute inset-0 bg-white/20 blur-xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
