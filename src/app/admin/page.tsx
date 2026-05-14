@@ -183,7 +183,12 @@ export default function AdminPage() {
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "cassette" ? "Voice Note Upload (.mp3, .wav)" : "Image / Audio Upload"} 
                     {editingMemory?.imageBase64 && " (Optional: leave blank to keep current)"}
                   </label>
-                  <input name="image" type="file" accept="image/*,audio/*" className="p-3 border rounded bg-transparent text-ink" />
+                  <input 
+                    name="image" 
+                    type="file" 
+                    accept={typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "cassette" ? "audio/*" : typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "photo" ? "image/*" : "image/*,audio/*"} 
+                    className="p-3 border rounded bg-transparent text-ink" 
+                  />
                 </div>
                 
                 <div className="flex flex-col gap-2 md:col-span-2" style={{ 
