@@ -62,6 +62,7 @@ export default function MemoryBoard({
   return (
     <>
       <div className="w-full h-full overflow-hidden bg-floral-paper relative">
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-[2px] pointer-events-none z-0" />
         <EnvironmentLayers />
         
         <TransformWrapper

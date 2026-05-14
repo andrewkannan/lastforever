@@ -21,7 +21,7 @@ export default function EasterEgg({ memory, onClick }: EasterEggProps) {
       dragMomentum={false}
       style={{ 
         x, y, touchAction: "none",
-        filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.15))"
+        filter: "drop-shadow(0 8px 16px rgba(0,0,0,0.3))"
       }}
       onDragEnd={async () => {
         await updateMemoryPosition(memory.id, x.get(), y.get());

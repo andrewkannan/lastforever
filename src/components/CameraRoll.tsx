@@ -28,7 +28,7 @@ export default function CameraRoll({ position = { x: 500, y: 100 }, memories }: 
       initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="absolute bg-black p-2 pb-2 rounded shadow-2xl cursor-grab active:cursor-grabbing hover:z-50 flex flex-col gap-2"
+      className="absolute bg-black p-2 pb-2 rounded shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] cursor-grab active:cursor-grabbing hover:z-50 flex flex-col gap-2"
     >
       {/* Top Film Holes */}
       <div className="flex justify-between px-1 w-full gap-2">

@@ -42,7 +42,7 @@ export default function RelationshipStats({ position = { x: 50, y: 50 }, startDa
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="absolute bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-[0_15px_35px_-5px_rgba(0,0,0,0.15)] border border-white/40 cursor-grab active:cursor-grabbing hover:z-50 flex flex-col items-center justify-center min-w-[200px]"
+      className="absolute bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] border border-white/40 cursor-grab active:cursor-grabbing hover:z-50 flex flex-col items-center justify-center min-w-[200px]"
     >
       <motion.div 
         animate={{ scale: [1, 1.2, 1] }} 

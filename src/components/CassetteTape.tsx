@@ -78,7 +78,7 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
         damping: 20
       }}
       onClick={() => onClick(memory)}
-      className="absolute p-4 pb-6 bg-white/80 backdrop-blur-md rounded-lg cursor-grab active:cursor-grabbing hover:z-50 transition-shadow duration-300 w-[280px] shadow-[0_15px_35px_-5px_rgba(0,0,0,0.15)] group border border-white/40 flex flex-col items-center"
+      className="absolute p-4 pb-6 bg-white/80 backdrop-blur-md rounded-lg cursor-grab active:cursor-grabbing hover:z-50 transition-shadow duration-300 w-[280px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] group border border-white/40 flex flex-col items-center"
     >
       {/* Cassette Shape details */}
       <div className="w-full bg-[#3a3a3a] rounded-sm p-3 relative shadow-inner overflow-hidden flex flex-col items-center">

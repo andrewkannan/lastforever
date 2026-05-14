@@ -103,7 +103,7 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, audioSrc, s
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="absolute bg-[#eaddcf] p-4 rounded-xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)] border border-[#d4c5b3] cursor-grab active:cursor-grabbing hover:z-50 flex flex-col gap-4 w-[320px]"
+      className="absolute bg-[#eaddcf] p-4 rounded-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.4)] border border-[#d4c5b3] cursor-grab active:cursor-grabbing hover:z-50 flex flex-col gap-4 w-[320px]"
     >
       <div className="flex justify-between items-center px-1">
         <h3 className="font-serif text-lg text-ink font-bold flex items-center gap-2">
