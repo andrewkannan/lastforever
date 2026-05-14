@@ -4,16 +4,32 @@ import { motion, useMotionValue } from "framer-motion";
 import { Memory } from "@/data/memories";
 import { updateMemoryPosition } from "@/actions/memoryActions";
 
-import { Flower2 } from "lucide-react";
-
 interface EasterEggProps {
   memory: Memory;
   onClick: (memory: Memory) => void;
 }
 
+const flowersList = [
+  'rose', 'tulip', 'sunflower', 'babybreath', 'carnation', 
+  'orchid', 'daffodil', 'daisy', 'gardenia', 'crocus', 
+  'cyclamen', 'lily'
+];
+
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+}
+
 export default function EasterEgg({ memory, onClick }: EasterEggProps) {
   const x = useMotionValue(memory.position.x);
   const y = useMotionValue(memory.position.y);
+
+  // Pick a flower consistently based on the memory ID
+  const flowerIndex = hashString(memory.id) % flowersList.length;
+  const flowerName = flowersList[flowerIndex];
 
   return (
     <motion.div
@@ -47,9 +63,13 @@ export default function EasterEgg({ memory, onClick }: EasterEggProps) {
         rotate: { duration: 0.5 }
       }}
       onClick={() => onClick(memory)}
-      className="absolute p-4 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center group hover:z-50 text-rose-soft/90 hover:text-rose-soft transition-colors"
+      className="absolute p-4 cursor-grab active:cursor-grabbing flex flex-col items-center justify-center group hover:z-50 transition-colors"
     >
-      <Flower2 size={48} strokeWidth={1.5} className="fill-white/20" />
+      <img 
+        src={`/flowers/${flowerName}.png`} 
+        alt={flowerName}
+        className="w-20 h-20 object-contain pointer-events-none drop-shadow-md" 
+      />
       
       {/* Subtle sparkling glow */}
       <div className="absolute inset-0 bg-white/20 blur-xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 pointer-events-none" />
