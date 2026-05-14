@@ -8,7 +8,7 @@ import { updateMemoryPosition } from "@/actions/memoryActions";
 
 interface CassetteTapeProps {
   memory: Memory;
-  onClick: (memory: Memory) => void;
+  onClick?: (memory: Memory) => void;
 }
 
 export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
@@ -148,7 +148,7 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
         stiffness: 260, 
         damping: 20
       }}
-      onClick={() => onClick(memory)}
+      onClick={onClick ? () => onClick(memory) : undefined}
       className="absolute p-4 pb-6 bg-white/80 backdrop-blur-md rounded-lg cursor-grab active:cursor-grabbing hover:z-50 transition-shadow duration-300 w-[280px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] group border border-white/40 flex flex-col items-center"
     >
       {/* Cassette Shape details */}

@@ -120,7 +120,7 @@ export default function MemoryBoard({
                 }
                 
                 if (m.type === "cassette") {
-                  return <CassetteTape key={m.id} memory={memory} onClick={handleItemClick} />;
+                  return <CassetteTape key={m.id} memory={memory} onClick={isAdmin ? handleItemClick : undefined} />;
                 }
 
                 if (memory.type === "photo") {
