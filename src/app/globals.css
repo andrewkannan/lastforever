@@ -29,7 +29,7 @@
   .bg-floral-paper {
     background-image: url("/bg-paper.png");
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
     background-attachment: fixed;
   }
 
