@@ -23,9 +23,13 @@ export default function TimelineSection({ position, memories, onClickItem }: Tim
       dragMomentum={false}
       initial={{ x: position.x, y: position.y, opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute flex flex-col items-center p-12 bg-white/5 backdrop-blur-sm rounded-[40px] border border-white/10 w-[600px] cursor-grab active:cursor-grabbing"
+      className="absolute flex flex-col items-center p-12 bg-white/80 backdrop-blur-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] rounded-[40px] border border-white/50 w-[600px] cursor-grab active:cursor-grabbing"
     >
-      <h2 className="font-serif text-4xl text-ink mb-16 tracking-widest uppercase">Our Timeline</h2>
+      {/* Floral Accents */}
+      <img src="/floral-accent.png" alt="floral accent" className="absolute -top-12 -right-12 w-40 h-40 object-contain mix-blend-multiply opacity-90 pointer-events-none z-10" />
+      <img src="/floral-accent.png" alt="floral accent" className="absolute -bottom-12 -left-12 w-40 h-40 object-contain mix-blend-multiply opacity-90 pointer-events-none rotate-180 z-10" />
+
+      <h2 className="font-serif text-4xl text-ink mb-16 tracking-widest uppercase relative z-20">Our Timeline</h2>
       
       <div className="relative w-full flex flex-col gap-16 pl-8 border-l border-ink/20">
         {milestones.map((milestone, index) => (

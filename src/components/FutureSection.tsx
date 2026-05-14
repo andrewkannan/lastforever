@@ -24,13 +24,13 @@ export default function FutureSection({ position, memories, onClickItem }: Futur
       dragMomentum={false}
       initial={{ x: position.x, y: position.y, opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="absolute p-16 w-[700px] cursor-grab active:cursor-grabbing flex flex-col items-center justify-center"
+      className="absolute p-16 w-[700px] cursor-grab active:cursor-grabbing flex flex-col items-center justify-center bg-white/80 backdrop-blur-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] rounded-[40px] border border-white/50"
     >
-      {/* Soft ethereal background glow */}
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-full shadow-[0_0_100px_rgba(255,255,255,0.8)] z-[-1]" />
-      <div className="absolute inset-0 bg-rose-soft/20 blur-3xl rounded-full z-[-2]" />
+      {/* Floral Accents */}
+      <img src="/floral-accent.png" alt="floral accent" className="absolute -top-12 -left-12 w-40 h-40 object-contain mix-blend-multiply opacity-90 pointer-events-none z-10 -scale-x-100" />
+      <img src="/floral-accent.png" alt="floral accent" className="absolute -bottom-12 -right-12 w-40 h-40 object-contain mix-blend-multiply opacity-90 pointer-events-none rotate-180 z-10 -scale-x-100" />
 
-      <h2 className="font-serif text-5xl text-ink mb-12 text-center text-shadow-soft">Our Future Vision</h2>
+      <h2 className="font-serif text-5xl text-ink mb-12 text-center text-shadow-soft relative z-20">Our Future Vision</h2>
       
       <div className="flex flex-wrap gap-4 justify-center">
         {dreams.map((dreamMemory, index) => (
