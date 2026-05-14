@@ -18,6 +18,13 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Audio API Refs
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const barsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (memory.imageUrl) {
@@ -29,7 +36,14 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
         }
       };
 
-      const handleEnded = () => setIsPlaying(false);
+      const handleEnded = () => {
+        setIsPlaying(false);
+        if (animationRef.current) cancelAnimationFrame(animationRef.current);
+        // Reset bars to 20%
+        barsRef.current.forEach(bar => {
+          if (bar) bar.style.height = '20%';
+        });
+      };
 
       audioRef.current.addEventListener('timeupdate', updateProgress);
       audioRef.current.addEventListener('ended', handleEnded);
@@ -40,9 +54,56 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
           audioRef.current.removeEventListener('timeupdate', updateProgress);
           audioRef.current.removeEventListener('ended', handleEnded);
         }
+        if (animationRef.current) cancelAnimationFrame(animationRef.current);
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+          audioContextRef.current.close();
+        }
       };
     }
   }, [memory.imageUrl]);
+
+  const initAudioNodes = () => {
+    if (!audioContextRef.current && audioRef.current) {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioCtx();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64; // Small size for just a few bins
+      
+      const source = audioCtx.createMediaElementSource(audioRef.current);
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      audioContextRef.current = audioCtx;
+      analyserRef.current = analyser;
+      sourceRef.current = source;
+    }
+  };
+
+  const updateWaveform = () => {
+    if (!analyserRef.current) return;
+    
+    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+    analyserRef.current.getByteFrequencyData(dataArray);
+    
+    // We have 6 bars, divide the frequency bins into 6 chunks
+    const step = Math.max(1, Math.floor(dataArray.length / 6));
+    
+    for (let i = 0; i < 6; i++) {
+      let sum = 0;
+      for (let j = 0; j < step; j++) {
+        sum += dataArray[i * step + j] || 0;
+      }
+      const avg = sum / step;
+      // Map 0-255 to 20%-100% height
+      const percentage = 20 + (avg / 255) * 80;
+      
+      if (barsRef.current[i]) {
+        barsRef.current[i]!.style.height = `${percentage}%`;
+      }
+    }
+    
+    animationRef.current = requestAnimationFrame(updateWaveform);
+  };
 
   const togglePlay = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,8 +111,18 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
 
     if (isPlaying) {
       audioRef.current.pause();
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      barsRef.current.forEach(bar => {
+        if (bar) bar.style.height = '20%';
+      });
     } else {
-      audioRef.current.play();
+      initAudioNodes();
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+      audioRef.current.play().then(() => {
+        updateWaveform();
+      }).catch(err => console.log("Audio playback failed:", err));
     }
     setIsPlaying(!isPlaying);
   };
@@ -112,18 +183,16 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
             {/* Viewport for tape */}
             <div className="w-12 h-6 bg-black/80 rounded-sm relative overflow-hidden flex items-end justify-center px-1">
               {/* Waveform Animation */}
-              {isPlaying && (
-                <div className="flex items-end gap-[2px] h-full pb-1">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ height: [`20%`, `${Math.random() * 80 + 20}%`, `20%`] }}
-                      transition={{ duration: 0.5 + Math.random() * 0.5, repeat: Infinity, ease: "easeInOut" }}
-                      className="w-1 bg-rose-soft/80 rounded-t-sm"
-                    />
-                  ))}
-                </div>
-              )}
+              <div className="flex items-end gap-[2px] h-full pb-1">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    ref={(el) => { barsRef.current[i] = el; }}
+                    className="w-1 bg-rose-soft/80 rounded-t-sm"
+                    style={{ height: '20%', transition: 'height 50ms ease-out' }}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Right Reel */}
