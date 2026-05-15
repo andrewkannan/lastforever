@@ -240,19 +240,6 @@ export default function AdminPage() {
                   <textarea name="content" rows={4} defaultValue={editingMemory?.type === "treasure_qna" ? editingMemory?.content : ""} placeholder="E.g. The time we got lost in Paris..." className="p-3 border rounded bg-transparent text-ink" disabled={typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "treasure_qna"} />
                 </div>
 
-                {/* Spotify / Settings Fields */}
-                <div className="flex flex-col gap-2 md:col-span-2 border-t pt-4 mt-2" style={{ 
-                  display: typeof document !== "undefined" && !["photo", "settings"].includes(document.querySelector('form')?.dataset.memoryType || "photo") && document.querySelector('form')?.dataset.memoryType !== undefined ? "none" : "flex" 
-                }}>
-                  <label className="text-sm font-bold text-ink-light mb-1">
-                    {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "Vinyl Player Music (Spotify Track ID or Direct MP3 URL)" : "Spotify Music Integration (Optional)"}
-                  </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input name="songTitle" type="text" defaultValue={editingMemory?.songTitle || ""} placeholder="Song Title" className="p-3 border rounded bg-transparent text-ink" />
-                    <input name="songArtist" type="text" defaultValue={editingMemory?.songArtist || ""} placeholder="Artist" className="p-3 border rounded bg-transparent text-ink" />
-                    <input name="songSpotifyId" type="text" defaultValue={editingMemory?.songSpotifyId || ""} placeholder="Spotify Track ID or Direct Link" className="p-3 border rounded bg-transparent text-ink" />
-                  </div>
-                </div>
               </div>
 
               <div className="flex justify-between items-center mt-4">
