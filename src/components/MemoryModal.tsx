@@ -18,7 +18,8 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-ink/90 backdrop-blur-md"
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-ink/80 backdrop-blur-md"
           onClick={onClose}
         >
           <button 
@@ -29,10 +30,10 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
           </button>
 
           <motion.div
-            initial={{ scale: 0.9, y: 20, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.9, y: 20, opacity: 0 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            initial={{ scale: 0.95, filter: "blur(10px)", opacity: 0 }}
+            animate={{ scale: 1, filter: "blur(0px)", opacity: 1 }}
+            exit={{ scale: 0.95, filter: "blur(10px)", opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="relative max-w-4xl w-full bg-paper rounded-lg overflow-hidden flex flex-col md:flex-row shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
