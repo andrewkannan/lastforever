@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Memory } from "@/data/memories";
 import { updateMemoryPosition } from "@/actions/memoryActions";
 import Confetti from "react-confetti";
@@ -126,7 +127,7 @@ export default function SlotMachine({ memory, onClick }: SlotMachineProps) {
 
   return (
     <>
-      {isWinner && (
+      {isWinner && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 pointer-events-none z-[9999]">
           <Confetti
             width={windowDimensions.width}
@@ -138,7 +139,8 @@ export default function SlotMachine({ memory, onClick }: SlotMachineProps) {
             gravity={0.3}
             numberOfPieces={150}
           />
-        </div>
+        </div>,
+        document.body
       )}
 
       <motion.div
