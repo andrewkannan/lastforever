@@ -47,7 +47,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
       >
 
         {/* Vintage Tulip Head in the Center */}
-        <div className="absolute top-[20%] md:top-[15%] w-full flex justify-center pointer-events-none">
+        <div className="absolute top-[8%] md:top-[10%] w-full flex justify-center pointer-events-none">
           <motion.div className="relative w-[280px] h-[280px] md:w-[350px] md:h-[350px] flex items-center justify-center">
             <motion.img 
               src="/tulip-head.png" 
@@ -87,7 +87,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
             </p>
 
             <h1 
-              className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-6 md:mb-8 leading-relaxed font-bold max-w-[80vw]"
+              className="font-serif text-[#3a3a3a] text-[1.2rem] sm:text-2xl md:text-4xl tracking-[0.15em] sm:tracking-[0.3em] uppercase mb-6 md:mb-8 font-bold whitespace-nowrap w-full text-center"
               style={{ textShadow: "0px 0px 12px rgba(255,255,255,1)" }}
             >
               {heroConfig.names}
@@ -115,18 +115,17 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
                 {/* Embossed Flower Icon */}
                 <img 
                   src="/tulip-head.png" 
-                  className="w-10 h-10 object-contain opacity-70 mix-blend-overlay brightness-0 pointer-events-none" 
+                  className="w-[80%] h-[80%] object-contain opacity-40 mix-blend-multiply pointer-events-none" 
                   alt="tulip seal" 
-                  style={{ filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.4))" }} 
                 />
               </div>
 
               {/* Circular Text around the seal */}
               <svg className="absolute inset-[-30px] w-[calc(100%+60px)] h-[calc(100%+60px)] origin-center animate-[spin_20s_linear_infinite] pointer-events-none" viewBox="0 0 120 120">
                 <path id="curve" d="M 60, 60 m -50, 0 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0" fill="transparent" />
-                <text className="font-sans text-[8px] font-bold tracking-[0.2em] uppercase fill-[#a58d55]">
+                <text className="font-sans text-[7.5px] font-bold tracking-[0.15em] uppercase fill-[#a58d55]">
                   <textPath href="#curve" startOffset="0%">
-                    ENTER THE LOVE WORLD • ENTER THE LOVE WORLD • 
+                    ENTER THE LOVE WORLD • ENTER THE LOVE WORLD • ENTER THE LOVE WORLD • 
                   </textPath>
                 </text>
               </svg>
