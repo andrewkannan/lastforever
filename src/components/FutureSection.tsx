@@ -9,14 +9,15 @@ interface FutureProps {
 }
 
 export default function FutureSection({ position, memories, onClickItem }: FutureProps) {
-  // Use DB memories or fallback if empty
-  const dreams = memories.length > 0 ? memories : [
-    { caption: "A cozy home with a large kitchen" },
-    { caption: "Kids running in the backyard" },
-    { caption: "Sunday morning pancakes" },
-    { caption: "Growing old together" },
-    { caption: "Serving God as a family" }
+  const fallbackDreams = [
+    { caption: "A cozy home with a large kitchen", type: "future" },
+    { caption: "Kids running in the backyard", type: "future" },
+    { caption: "Sunday morning pancakes", type: "future" },
+    { caption: "Growing old together", type: "future" },
+    { caption: "Serving God as a family", type: "future" }
   ];
+
+  const dreams = [...fallbackDreams, ...memories];
 
   return (
     <motion.div

@@ -9,13 +9,14 @@ interface TimelineProps {
 }
 
 export default function TimelineSection({ position, memories, onClickItem }: TimelineProps) {
-  // Use DB memories or fallback if empty
-  const milestones = memories.length > 0 ? memories : [
-    { date: "2022", caption: "First Meeting" },
-    { date: "2023", caption: "Our First Trip" },
-    { date: "2024", caption: "The Engagement" },
-    { date: "Forever", caption: "Building Our Life" }
+  const fallbackMilestones = [
+    { date: "2022", caption: "First Meeting", type: "timeline" },
+    { date: "2023", caption: "Our First Trip", type: "timeline" },
+    { date: "2024", caption: "The Engagement", type: "timeline" },
+    { date: "Forever", caption: "Building Our Life", type: "timeline" }
   ];
+
+  const milestones = [...fallbackMilestones, ...memories].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
 
   return (
     <motion.div
