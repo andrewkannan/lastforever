@@ -2,9 +2,12 @@
 
 import { motion } from "framer-motion";
 import { heroConfig } from "@/data/memories";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { preload } from "react-dom";
 
 export default function Hero({ onBegin }: { onBegin: () => void }) {
+  preload('/tulip-head.png', { as: 'image' });
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
