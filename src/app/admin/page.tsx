@@ -59,7 +59,9 @@ export default function AdminPage() {
     const formData = new FormData(e.currentTarget);
     
     if (recordedAudioBlob) {
-      const ext = recordedAudioBlob.type.includes("mp4") ? "m4a" : "webm";
+      let ext = "webm";
+      if (recordedAudioBlob.type.includes("mp4")) ext = "m4a";
+      if (recordedAudioBlob.type.includes("mpeg")) ext = "mp3";
       formData.set("image", recordedAudioBlob, `voice_note.${ext}`);
     }
 

@@ -33,24 +33,11 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
       angle: Math.PI + (Math.random() * Math.PI), // Fly upwards
     }));
     setParticles(newParticles);
+    
+    return () => {
+      if (animationRef.current) clearInterval(animationRef.current);
+    };
   }, []);
-
-  useEffect(() => {
-    if (memory.imageUrl) {
-      audioRef.current = new Audio(memory.imageUrl);
-      audioRef.current.addEventListener('timeupdate', updateProgress);
-      audioRef.current.addEventListener('ended', handleEnded);
-
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.removeEventListener('timeupdate', updateProgress);
-          audioRef.current.removeEventListener('ended', handleEnded);
-        }
-        if (animationRef.current) clearInterval(animationRef.current);
-      };
-    }
-  }, [memory.imageUrl]);
 
   const updateProgress = () => {
     if (audioRef.current) {
@@ -116,6 +103,17 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
       onClick={onClick ? () => onClick(memory) : undefined}
       className="absolute flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:z-50 group w-[320px] h-[220px]"
     >
+      {memory.imageUrl && (
+        <audio 
+          ref={audioRef} 
+          src={memory.imageUrl} 
+          preload="auto" 
+          onTimeUpdate={updateProgress}
+          onEnded={handleEnded}
+          className="hidden" 
+        />
+      )}
+      
       {/* Particle Effects (Heart Bubbles) */}
       <div className="absolute inset-0 z-[-1] pointer-events-none overflow-visible flex items-center justify-center">
         {isPlaying && particles.map((p) => {
