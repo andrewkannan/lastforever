@@ -25,7 +25,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
     
     setTimeout(() => {
       onBegin();
-    }, 1500); 
+    }, 2500); // 2.5s cinematic fade
   };
 
   const namesParts = heroConfig.names.split('&').map(n => n.trim());
@@ -35,15 +35,17 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white text-[#333] overflow-hidden origin-left"
-      style={{ transformStyle: "preserve-3d", perspective: "2000px" }}
-      initial={{ rotateY: 0 }}
-      animate={{ rotateY: isFlipping ? -180 : 0 }}
-      transition={{ duration: 1.5, ease: [0.645, 0.045, 0.355, 1.000] }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white text-[#333] overflow-hidden pointer-events-auto"
+      initial={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+      animate={{ 
+        opacity: isFlipping ? 0 : 1, 
+        scale: isFlipping ? 1.15 : 1,
+        filter: isFlipping ? "blur(8px)" : "blur(0px)"
+      }}
+      transition={{ duration: 2.5, ease: "easeInOut" }}
     >
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center bg-white w-full h-full py-[5vh] md:py-[10vh]"
-        style={{ backfaceVisibility: "hidden" }}
+        className="absolute inset-0 flex flex-col items-center justify-center w-full h-full py-[5vh] md:py-[10vh]"
       >
         <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-8 -mt-8 md:-mt-12">
         {/* Vintage Tulip Head in the Center */}
@@ -134,12 +136,6 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
         {/* Hidden Audio Element */}
         <audio ref={audioRef} src="/piano.mp3" loop />
       </div>
-
-      {/* Back Face (when flipping away) */}
-      <div 
-        className="absolute inset-0 bg-white rotate-y-180"
-        style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-      />
     </motion.div>
   );
 }
