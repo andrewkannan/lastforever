@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { uploadToS3 } from "@/lib/s3";
 
 export async function getMemories() {
   try {
@@ -59,17 +60,15 @@ export async function addMemory(formData: FormData) {
       if (audioFiles && audioFiles.length > 0) {
         for (const file of audioFiles) {
           if (file.size > 0) {
-            const buffer = await file.arrayBuffer();
-            const base64Data = Buffer.from(buffer).toString("base64");
-            const imageBase64 = `data:${file.type};base64,${base64Data}`;
-            // Use filename as initial title, strip extension
+            const buffer = Buffer.from(await file.arrayBuffer());
+            const imageUrl = await uploadToS3(buffer, file.name, file.type);
             const title = file.name.replace(/\.[^/.]+$/, "");
             
             await prisma.memory.create({
               data: {
                 type: "vinyl_song",
                 caption: title,
-                imageBase64,
+                imageUrl,
                 posX: 0,
                 posY: 0,
                 rotation: 0
@@ -83,17 +82,15 @@ export async function addMemory(formData: FormData) {
       }
     }
     
-    // Handle image if provided
-    let imageBase64 = null;
+    // Handle image/audio upload if provided
+    let imageUrl: string | null = null;
     const imageFile = formData.get("image") as File;
     if (imageFile && imageFile.size > 0) {
-      const buffer = await imageFile.arrayBuffer();
-      const base64Data = Buffer.from(buffer).toString("base64");
-      // Prepend the mime type so it can be used directly in an img src
-      imageBase64 = `data:${imageFile.type};base64,${base64Data}`;
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      imageUrl = await uploadToS3(buffer, imageFile.name, imageFile.type);
     }
 
-    // Spawn perfectly at top-left of initial viewport to ensure it is immediately visible
+    // Spawn perfectly at top-left of initial viewport
     const posX = 600;
     const posY = 300;
     const rotation = (Math.random() - 0.5) * 15; // -7.5 to 7.5 degrees
@@ -108,7 +105,7 @@ export async function addMemory(formData: FormData) {
         songTitle,
         songArtist,
         songSpotifyId,
-        imageBase64,
+        imageUrl,
         posX,
         posY,
         rotation
@@ -136,12 +133,11 @@ export async function editMemory(id: string, formData: FormData) {
     const songSpotifyId = formData.get("songSpotifyId") as string;
     
     // Check if new image was provided
-    let imageBase64: string | undefined = undefined;
+    let imageUrl: string | undefined = undefined;
     const imageFile = formData.get("image") as File;
     if (imageFile && imageFile.size > 0) {
-      const buffer = await imageFile.arrayBuffer();
-      const base64Data = Buffer.from(buffer).toString("base64");
-      imageBase64 = `data:${imageFile.type};base64,${base64Data}`;
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      imageUrl = await uploadToS3(buffer, imageFile.name, imageFile.type);
     }
 
     const updateData: any = {
@@ -155,8 +151,10 @@ export async function editMemory(id: string, formData: FormData) {
       songSpotifyId,
     };
 
-    if (imageBase64 !== undefined) {
-      updateData.imageBase64 = imageBase64;
+    if (imageUrl !== undefined) {
+      updateData.imageUrl = imageUrl;
+      // If we upload a new image to S3, clear the legacy base64 data to save DB space
+      updateData.imageBase64 = null;
     }
 
     await prisma.memory.update({
