@@ -70,10 +70,9 @@ export default function MemoryBoard({
     <>
       <div className="w-full h-full overflow-hidden bg-white relative">
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none opacity-[0.85] mix-blend-multiply" 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none" 
           style={{ backgroundImage: "url('/tulip-wall.png')" }} 
         />
-        <div className="absolute inset-0 bg-white/20 bg-noise pointer-events-none z-0" />
         <EnvironmentLayers />
         
         <TransformWrapper
