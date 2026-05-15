@@ -28,7 +28,18 @@ export default function AudioRecorder({ onRecordingComplete }: AudioRecorderProp
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      let options: MediaRecorderOptions = {};
+      if (typeof MediaRecorder.isTypeSupported === 'function') {
+        if (MediaRecorder.isTypeSupported('audio/webm')) {
+          options = { mimeType: 'audio/webm' };
+        } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          options = { mimeType: 'audio/mp4' };
+        } else if (MediaRecorder.isTypeSupported('audio/mpeg')) {
+          options = { mimeType: 'audio/mpeg' };
+        }
+      }
+      
+      const mediaRecorder = new MediaRecorder(stream, options);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -39,7 +50,7 @@ export default function AudioRecorder({ onRecordingComplete }: AudioRecorderProp
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/mp4' });
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         onRecordingComplete(audioBlob);
@@ -56,9 +67,9 @@ export default function AudioRecorder({ onRecordingComplete }: AudioRecorderProp
         setRecordingTime(prev => prev + 1);
       }, 1000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error accessing microphone:", err);
-      alert("Microphone access denied or unavailable.");
+      alert("Error accessing microphone: " + (err.message || "Unknown error"));
     }
   };
 
