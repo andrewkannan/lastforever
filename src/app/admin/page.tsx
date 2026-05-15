@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { getMemories, addMemory, deleteMemory, editMemory } from "@/actions/memoryActions";
-import { 
-  Trash2, Plus, LogIn, Pencil, X, Settings, Music,
-  ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen
-} from "lucide-react";
+import { Trash2, Plus, LogIn, Pencil, X, Settings, Music, ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen } from "lucide-react";
 import MemoryBoard from "@/components/MemoryBoard";
+import AudioRecorder from "@/components/AudioRecorder";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,6 +15,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isManagingVinyl, setIsManagingVinyl] = useState(false);
   const [selectedMemoryType, setSelectedMemoryType] = useState<string | null>(null);
+  const [recordedAudioBlob, setRecordedAudioBlob] = useState<Blob | null>(null);
 
   const MEMORY_TYPES = [
     { id: "photo", name: "Photo (Polaroid)", description: "A classic vintage polaroid photo with handwriting.", icon: Camera, color: "bg-blue-50 text-blue-600 border-blue-100" },
@@ -58,6 +57,11 @@ export default function AdminPage() {
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     
+    if (recordedAudioBlob) {
+      const ext = recordedAudioBlob.type.includes("mp4") ? "m4a" : "webm";
+      formData.set("image", recordedAudioBlob, `voice_note.${ext}`);
+    }
+
     let res;
     // Check if editing a real memory from DB, not a fallback placeholder
     if (editingMemory && editingMemory.id && editingMemory.id !== "drawer") {
@@ -72,6 +76,7 @@ export default function AdminPage() {
       setIsAdding(false);
       setEditingMemory(null);
       setSelectedMemoryType(null);
+      setRecordedAudioBlob(null);
       fetchMemories();
     } else {
       alert(editingMemory ? "Failed to update memory." : "Failed to add memory.");
@@ -229,15 +234,32 @@ export default function AdminPage() {
                   display: !["photo", "cassette", "settings"].includes(selectedMemoryType || editingMemory?.type || "photo") ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
-                    {(selectedMemoryType || editingMemory?.type || "photo") === "cassette" ? "Voice Note Upload (.mp3, .wav)" : "Image / Audio Upload"} 
+                    {(selectedMemoryType || editingMemory?.type || "photo") === "cassette" ? "Voice Note Source" : "Image / Audio Upload"} 
                     {editingMemory?.imageBase64 && " (Optional: leave blank to keep current)"}
                   </label>
-                  <input 
-                    name="image" 
-                    type="file" 
-                    accept={(selectedMemoryType || editingMemory?.type || "photo") === "cassette" ? "audio/*" : (selectedMemoryType || editingMemory?.type || "photo") === "photo" ? "image/*" : "image/*,audio/*"} 
-                    className="p-3 border rounded bg-transparent text-ink" 
-                  />
+                  
+                  {(selectedMemoryType || editingMemory?.type || "photo") === "cassette" ? (
+                    <div className="flex flex-col gap-4">
+                      <AudioRecorder onRecordingComplete={setRecordedAudioBlob} />
+                      <div className="flex items-center gap-4 text-xs font-bold text-ink-light uppercase">
+                        <hr className="flex-1 border-ink-light/20" /> OR UPLOAD FILE <hr className="flex-1 border-ink-light/20" />
+                      </div>
+                      <input 
+                        name="image" 
+                        type="file" 
+                        accept="audio/*" 
+                        className="p-3 border rounded bg-transparent text-ink" 
+                        disabled={!!recordedAudioBlob}
+                      />
+                    </div>
+                  ) : (
+                    <input 
+                      name="image" 
+                      type="file" 
+                      accept={(selectedMemoryType || editingMemory?.type || "photo") === "photo" ? "image/*" : "image/*,audio/*"} 
+                      className="p-3 border rounded bg-transparent text-ink" 
+                    />
+                  )}
                 </div>
 
                 {/* Vinyl Track Upload */}
