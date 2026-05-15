@@ -164,13 +164,14 @@ export default function AdminPage() {
                     <option value="timeline">Timeline Milestone</option>
                     <option value="future">Future Dream</option>
                     <option value="cassette">Cassette (Voice Note)</option>
+                    <option value="treasure_qna">Vintage Treasure Q&A</option>
                     {editingMemory?.type === "settings" && <option value="settings">Global Settings</option>}
                   </select>
                 </div>
 
                 {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings, Countdown. */}
                 <div className="flex flex-col gap-2" style={{ 
-                  display: typeof document !== "undefined" && ["note", "letter", "future", "cassette", "vinyl_song"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
+                  display: typeof document !== "undefined" && ["note", "letter", "future", "cassette", "vinyl_song", "treasure_qna"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : "flex" 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Year (e.g. 2024)" : (
@@ -216,7 +217,7 @@ export default function AdminPage() {
                 </div>
                 
                 <div className="flex flex-col gap-2 md:col-span-2" style={{ 
-                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "settings" ? "none" : (typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "vinyl_song" && !editingMemory ? "none" : "flex") 
+                  display: typeof document !== "undefined" && ["settings", "treasure_qna"].includes(document.querySelector('form')?.dataset.memoryType || "photo") ? "none" : (typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "vinyl_song" && !editingMemory ? "none" : "flex") 
                 }}>
                   <label className="text-sm font-bold text-ink-light">
                     {typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "timeline" ? "Event Name" : (
@@ -225,7 +226,18 @@ export default function AdminPage() {
                       )
                     )}
                   </label>
-                  <textarea name="caption" rows={3} defaultValue={editingMemory?.caption || editingMemory?.content || ""} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" />
+                  <textarea name="caption" rows={3} defaultValue={editingMemory?.caption || editingMemory?.content || ""} placeholder="Write your text here..." className="p-3 border rounded bg-transparent text-ink" disabled={typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "treasure_qna"} />
+                </div>
+
+                {/* Treasure Q&A Fields */}
+                <div className="flex flex-col gap-2 md:col-span-2" style={{ 
+                  display: typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType === "treasure_qna" ? "flex" : "none" 
+                }}>
+                  <label className="text-sm font-bold text-ink-light">Question</label>
+                  <input name="caption" type="text" defaultValue={editingMemory?.type === "treasure_qna" ? editingMemory?.caption : ""} placeholder="E.g. What is our favorite memory?" className="p-3 border rounded bg-transparent text-ink" disabled={typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "treasure_qna"} />
+                  
+                  <label className="text-sm font-bold text-ink-light mt-2">Answer</label>
+                  <textarea name="content" rows={4} defaultValue={editingMemory?.type === "treasure_qna" ? editingMemory?.content : ""} placeholder="E.g. The time we got lost in Paris..." className="p-3 border rounded bg-transparent text-ink" disabled={typeof document !== "undefined" && document.querySelector('form')?.dataset.memoryType !== "treasure_qna"} />
                 </div>
 
                 {/* Spotify / Settings Fields */}
