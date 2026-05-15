@@ -22,19 +22,9 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          position: 'relative',
         }}
       >
         <img src={tulipSrc} style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
-        <div style={{
-          position: 'absolute',
-          color: '#fbfaf6',
-          fontSize: 180,
-          fontFamily: 'serif',
-          textShadow: '0px 4px 15px rgba(0,0,0,0.6)',
-        }}>
-          A&K
-        </div>
       </div>
     ),
     { ...size }
