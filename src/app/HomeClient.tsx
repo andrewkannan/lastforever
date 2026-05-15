@@ -7,7 +7,7 @@ import MemoryBoard from "@/components/MemoryBoard";
 import TreasureBoxLayer from "@/components/TreasureBoxLayer";
 import { Memory } from "@/data/memories";
 
-export default function HomeClient({ initialMemories }: { initialMemories: Memory[] }) {
+export default function HomeClient({ initialMemories }: { initialMemories: any[] }) {
   const [layer, setLayer] = useState(1); // 1: Treasure, 2: Cover, 3: Board
 
   return (

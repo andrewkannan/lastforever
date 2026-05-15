@@ -5,14 +5,14 @@ import { useState, useEffect, useRef } from "react";
 import { Memory } from "@/data/memories";
 
 interface TreasureBoxLayerProps {
-  memories: Memory[];
+  memories: any[];
   onComplete: () => void;
 }
 
 export default function TreasureBoxLayer({ memories, onComplete }: TreasureBoxLayerProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [randomQnA, setRandomQnA] = useState<Memory | null>(null);
+  const [randomQnA, setRandomQnA] = useState<any | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [particles, setParticles] = useState<{ id: number, x: number, y: number, duration: number, delay: number, size: number }[]>([]);
 
