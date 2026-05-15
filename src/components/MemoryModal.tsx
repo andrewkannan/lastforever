@@ -19,11 +19,11 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-ink/80 backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-white/70 backdrop-blur-md"
           onClick={onClose}
         >
           <button 
-            className="absolute top-8 right-8 text-paper hover:text-white transition-colors"
+            className="absolute top-8 right-8 text-ink hover:text-ink-light transition-colors"
             onClick={onClose}
           >
             <X size={32} />
