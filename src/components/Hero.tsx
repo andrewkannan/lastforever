@@ -72,7 +72,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
         </motion.div>
 
         {/* Typography Section */}
-        <div className="relative z-20 flex flex-col items-center w-full px-6 text-center">
+        <div className="relative z-20 flex flex-col items-center w-full px-6 text-center -mt-8 md:-mt-12">
           <motion.div
             className="flex flex-col items-center gap-6 md:gap-8"
             initial={{ opacity: 0, y: 30 }}
