@@ -103,7 +103,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
           transition={{ duration: 2, delay: 0.8 }}
         >
           <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-10 md:mb-16">
-            The Wedding Of
+            The Love Story Of
           </p>
 
           <h1 className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-10 md:mb-16 leading-relaxed">
@@ -111,7 +111,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
           </h1>
 
           <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-12">
-            November 2024
+            Written in Heaven
           </p>
 
           <motion.button
