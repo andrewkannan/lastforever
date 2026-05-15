@@ -74,7 +74,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
         {/* Typography Section */}
         <div className="relative z-20 flex flex-col items-center w-full px-6 text-center">
           <motion.div
-            className="flex flex-col items-center gap-6 md:gap-8"
+            className="flex flex-col items-center gap-3 md:gap-5 -mt-12 md:-mt-20"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, delay: 0.8 }}
