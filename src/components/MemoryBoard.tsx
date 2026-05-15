@@ -55,7 +55,7 @@ export default function MemoryBoard({
     .map(m => ({
       id: m.id,
       title: m.caption || "Unknown Track",
-      src: m.imageBase64 || ""
+      src: m.imageUrl || m.imageBase64 || ""
     }));
 
   const handleItemClick = (memory: any) => {
