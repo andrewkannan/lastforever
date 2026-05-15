@@ -61,61 +61,73 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
     >
       {/* Front Face of the Cover Page */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-start bg-white"
+        className="absolute inset-0 flex flex-col items-center justify-center bg-white"
         style={{ backfaceVisibility: "hidden" }}
       >
 
-        {/* Vintage Tulip Image overlapping from top */}
-        <div className="relative w-full max-w-[800px] h-[55vh] flex items-center justify-center -mt-8 md:-mt-4">
+        {/* Vintage Tulip Image filling the page */}
+        <div className="absolute inset-0 w-full h-full">
           <motion.img 
             src="/hero-tulips.png" 
             alt="Vintage Tulips" 
-            className="w-full h-full object-cover md:object-contain object-top drop-shadow-sm z-0 mix-blend-multiply"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="w-full h-full object-cover object-center drop-shadow-sm z-0 mix-blend-multiply opacity-90"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
           />
+        </div>
+
+        {/* Text overlay over the flower */}
+        <div className="relative z-20 flex flex-col items-center justify-center w-full h-full px-6 text-center">
           
-          {/* Monogram Overlay positioned over the flower head */}
+          {/* Monogram Overlay */}
           <motion.div 
-            className="absolute top-[25%] md:top-[30%] text-[#fbfaf6] font-serif text-5xl md:text-7xl z-20"
-            style={{ textShadow: "1px 1px 4px rgba(0,0,0,0.4)" }}
+            className="text-[#fbfaf6] font-serif text-5xl md:text-7xl mb-16"
+            style={{ textShadow: "0px 2px 10px rgba(0,0,0,0.5)" }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
           >
             {monogram}
           </motion.div>
-        </div>
 
-        {/* Typography Section */}
-        <motion.div
-          className="z-20 text-center flex flex-col items-center mt-8 md:mt-12 px-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 2, delay: 0.8 }}
-        >
-          <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-10 md:mb-16">
-            The Love Story Of
-          </p>
-
-          <h1 className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-10 md:mb-16 leading-relaxed">
-            {heroConfig.names}
-          </h1>
-
-          <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-12">
-            Written in Heaven
-          </p>
-
-          <motion.button
-            onClick={handleBegin}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="mt-8 px-8 py-3 border border-[#a58d55] text-[#a58d55] hover:bg-[#a58d55] hover:text-white font-sans text-xs tracking-widest uppercase transition-all duration-300"
+          <motion.div
+            className="flex flex-col items-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 2, delay: 0.8 }}
           >
-            Open Book
-          </motion.button>
-        </motion.div>
+            <p 
+              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-8 md:mb-10 font-semibold"
+              style={{ textShadow: "0px 0px 8px rgba(255,255,255,0.9)" }}
+            >
+              The Love Story Of
+            </p>
+
+            <h1 
+              className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-8 md:mb-10 leading-relaxed font-bold"
+              style={{ textShadow: "0px 0px 12px rgba(255,255,255,1)" }}
+            >
+              {heroConfig.names}
+            </h1>
+
+            <p 
+              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-12 font-semibold"
+              style={{ textShadow: "0px 0px 8px rgba(255,255,255,0.9)" }}
+            >
+              Written in Heaven
+            </p>
+
+            <motion.button
+              onClick={handleBegin}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-4 px-10 py-4 bg-white/70 backdrop-blur-sm border border-[#a58d55] text-[#a58d55] hover:bg-[#a58d55] hover:text-white font-sans text-xs tracking-widest uppercase transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.1)] rounded-sm"
+            >
+              Open Book
+            </motion.button>
+          </motion.div>
+        </div>
 
 
 
