@@ -3,26 +3,11 @@
 import { motion } from "framer-motion";
 import { heroConfig } from "@/data/memories";
 import { useState, useRef } from "react";
-import { Volume2, VolumeX } from "lucide-react";
 
 export default function Hero({ onBegin }: { onBegin: () => void }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFlipping, setIsFlipping] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const toggleAudio = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => setIsPlaying(true)).catch(() => console.log("Audio playback failed or missing source"));
-        }
-      }
-    }
-  };
 
   const handleBegin = () => {
     try {
@@ -36,16 +21,13 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
       console.log("Caught audio play error:", e);
     }
     
-    // Trigger the flip animation
     setIsFlipping(true);
     
-    // Wait for the flip animation to finish before unmounting
     setTimeout(() => {
       onBegin();
-    }, 1500); // 1.5 seconds duration matches the transition below
+    }, 1500); 
   };
 
-  // Extract initials for the monogram
   const namesParts = heroConfig.names.split('&').map(n => n.trim());
   const monogram = namesParts.length === 2 
     ? `${namesParts[0][0]}&${namesParts[1][0]}` 
@@ -53,44 +35,44 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-white text-[#333] overflow-hidden origin-left"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white text-[#333] overflow-hidden origin-left"
       style={{ transformStyle: "preserve-3d", perspective: "2000px" }}
       initial={{ rotateY: 0 }}
       animate={{ rotateY: isFlipping ? -180 : 0 }}
       transition={{ duration: 1.5, ease: [0.645, 0.045, 0.355, 1.000] }}
     >
-      {/* Front Face of the Cover Page */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center bg-white"
+        className="absolute inset-0 flex flex-col items-center justify-center bg-white w-full h-full"
         style={{ backfaceVisibility: "hidden" }}
       >
 
-        {/* Vintage Tulip Image filling the page */}
-        <div className="absolute inset-0 w-full h-full">
-          <motion.img 
-            src="/hero-tulips.png" 
-            alt="Vintage Tulips" 
-            className="w-full h-full object-cover object-center drop-shadow-sm z-0 mix-blend-multiply opacity-90"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-          />
+        {/* Vintage Tulip Head in the Center */}
+        <div className="absolute top-[20%] md:top-[15%] w-full flex justify-center pointer-events-none">
+          <motion.div className="relative w-[280px] h-[280px] md:w-[350px] md:h-[350px] flex items-center justify-center">
+            <motion.img 
+              src="/tulip-head.png" 
+              alt="Vintage Tulip Head" 
+              className="w-full h-full object-contain mix-blend-multiply opacity-90"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2, ease: "easeOut" }}
+            />
+            
+            {/* Monogram Overlay perfectly centered on the flower */}
+            <motion.div 
+              className="absolute text-[#fbfaf6] font-serif text-6xl md:text-8xl z-20"
+              style={{ textShadow: "0px 2px 10px rgba(0,0,0,0.6)" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
+            >
+              {monogram}
+            </motion.div>
+          </motion.div>
         </div>
 
-        {/* Text overlay over the flower */}
-        <div className="relative z-20 flex flex-col items-center justify-center w-full h-full px-6 text-center">
-          
-          {/* Monogram Overlay */}
-          <motion.div 
-            className="text-[#fbfaf6] font-serif text-5xl md:text-7xl mb-16"
-            style={{ textShadow: "0px 2px 10px rgba(0,0,0,0.5)" }}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-          >
-            {monogram}
-          </motion.div>
-
+        {/* Typography Section below the flower */}
+        <div className="relative z-20 flex flex-col items-center justify-end w-full h-full pb-[10vh] px-6 text-center">
           <motion.div
             className="flex flex-col items-center"
             initial={{ opacity: 0, y: 30 }}
@@ -98,50 +80,69 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
             transition={{ duration: 2, delay: 0.8 }}
           >
             <p 
-              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-8 md:mb-10 font-semibold"
-              style={{ textShadow: "0px 0px 8px rgba(255,255,255,0.9)" }}
+              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-6 md:mb-8 font-semibold"
+              style={{ textShadow: "0px 0px 8px rgba(255,255,255,1)" }}
             >
               The Love Story Of
             </p>
 
             <h1 
-              className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-8 md:mb-10 leading-relaxed font-bold"
+              className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-6 md:mb-8 leading-relaxed font-bold max-w-[80vw]"
               style={{ textShadow: "0px 0px 12px rgba(255,255,255,1)" }}
             >
               {heroConfig.names}
             </h1>
 
             <p 
-              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-12 font-semibold"
-              style={{ textShadow: "0px 0px 8px rgba(255,255,255,0.9)" }}
+              className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-16 font-semibold"
+              style={{ textShadow: "0px 0px 8px rgba(255,255,255,1)" }}
             >
               Written in Heaven
             </p>
 
+            {/* Wax Seal Button */}
             <motion.button
               onClick={handleBegin}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="mt-4 px-10 py-4 bg-white/70 backdrop-blur-sm border border-[#a58d55] text-[#a58d55] hover:bg-[#a58d55] hover:text-white font-sans text-xs tracking-widest uppercase transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.1)] rounded-sm"
+              className="relative w-28 h-28 flex items-center justify-center group"
             >
-              Open Book
+              {/* Wax seal body */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#9c2727] to-[#631414] rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.2),inset_0_-3px_6px_rgba(0,0,0,0.3),inset_0_3px_6px_rgba(255,255,255,0.2)] flex items-center justify-center transition-all duration-300 border-[1px] border-[#570f0f]">
+                {/* Inner rim */}
+                <div className="absolute inset-2 border-[1px] border-[#b03a3a] rounded-full opacity-50 shadow-[inset_0_1px_3px_rgba(0,0,0,0.6)]" />
+                
+                {/* Embossed Flower Icon */}
+                <img 
+                  src="/tulip-head.png" 
+                  className="w-10 h-10 object-contain opacity-70 mix-blend-overlay brightness-0 pointer-events-none" 
+                  alt="tulip seal" 
+                  style={{ filter: "drop-shadow(0px 1px 1px rgba(255,255,255,0.4))" }} 
+                />
+              </div>
+
+              {/* Circular Text around the seal */}
+              <svg className="absolute inset-[-30px] w-[calc(100%+60px)] h-[calc(100%+60px)] origin-center animate-[spin_20s_linear_infinite] pointer-events-none" viewBox="0 0 120 120">
+                <path id="curve" d="M 60, 60 m -50, 0 a 50,50 0 1,1 100,0 a 50,50 0 1,1 -100,0" fill="transparent" />
+                <text className="font-sans text-[8px] font-bold tracking-[0.2em] uppercase fill-[#a58d55]">
+                  <textPath href="#curve" startOffset="0%">
+                    ENTER THE LOVE WORLD • ENTER THE LOVE WORLD • 
+                  </textPath>
+                </text>
+              </svg>
             </motion.button>
           </motion.div>
         </div>
 
-
-
-        {/* Hidden Audio Element - Add src="path/to/music.mp3" later */}
+        {/* Hidden Audio Element */}
         <audio ref={audioRef} src="/piano.mp3" loop />
       </div>
 
       {/* Back Face (when flipping away) */}
       <div 
-        className="absolute inset-0 bg-[#e8dfcf] rotate-y-180"
+        className="absolute inset-0 bg-white rotate-y-180"
         style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
-      >
-        <div className="absolute inset-0 bg-noise opacity-50" />
-      </div>
+      />
     </motion.div>
   );
 }
