@@ -18,12 +18,8 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  
-  // Audio API Refs
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const animationRef = useRef<number | null>(null);
   const barsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const animationRef = useRef<number | null>(null);
 
   // Particle System
   const [particles, setParticles] = useState<{ id: number, delay: number, duration: number, angle: number }[]>([]);
@@ -42,22 +38,6 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
   useEffect(() => {
     if (memory.imageUrl) {
       audioRef.current = new Audio(memory.imageUrl);
-      
-      const updateProgress = () => {
-        if (audioRef.current) {
-          setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
-        }
-      };
-
-      const handleEnded = () => {
-        setIsPlaying(false);
-        if (animationRef.current) cancelAnimationFrame(animationRef.current);
-        // Reset bars to 20%
-        barsRef.current.forEach(bar => {
-          if (bar) bar.style.height = '20%';
-        });
-      };
-
       audioRef.current.addEventListener('timeupdate', updateProgress);
       audioRef.current.addEventListener('ended', handleEnded);
 
@@ -67,46 +47,32 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
           audioRef.current.removeEventListener('timeupdate', updateProgress);
           audioRef.current.removeEventListener('ended', handleEnded);
         }
-        if (animationRef.current) cancelAnimationFrame(animationRef.current);
-        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-          audioContextRef.current.close();
-        }
+        if (animationRef.current) clearInterval(animationRef.current);
       };
     }
   }, [memory.imageUrl]);
 
-  const initAudioNodes = () => {
-    if (!audioContextRef.current && audioRef.current) {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const analyser = audioCtx.createAnalyser();
-      const source = audioCtx.createMediaElementSource(audioRef.current);
-      
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
-      
-      analyser.fftSize = 32;
-      
-      audioContextRef.current = audioCtx;
-      analyserRef.current = analyser;
+  const updateProgress = () => {
+    if (audioRef.current) {
+      setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
     }
   };
 
-  const updateWaveform = () => {
-    if (!analyserRef.current) return;
-    
-    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-    analyserRef.current.getByteFrequencyData(dataArray);
-    
-    // We only have 6 bars, take first 6 frequency bins
-    for (let i = 0; i < 6; i++) {
-      const value = dataArray[i];
-      const percentage = Math.max(20, (value / 255) * 100);
-      if (barsRef.current[i]) {
-        barsRef.current[i]!.style.height = `${percentage}%`;
+  const handleEnded = () => {
+    setIsPlaying(false);
+    if (animationRef.current) clearInterval(animationRef.current);
+    // Reset bars to 20%
+    barsRef.current.forEach(bar => {
+      if (bar) bar.style.height = '20%';
+    });
+  };
+
+  const fakeWaveform = () => {
+    barsRef.current.forEach(bar => {
+      if (bar) {
+        bar.style.height = `${20 + Math.random() * 80}%`;
       }
-    }
-    
-    animationRef.current = requestAnimationFrame(updateWaveform);
+    });
   };
 
   const togglePlay = (e: React.MouseEvent) => {
@@ -115,18 +81,13 @@ export default function CassetteTape({ memory, onClick }: CassetteTapeProps) {
 
     if (isPlaying) {
       audioRef.current.pause();
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) clearInterval(animationRef.current);
       barsRef.current.forEach(bar => {
         if (bar) bar.style.height = '20%';
       });
     } else {
-      initAudioNodes();
-      if (audioContextRef.current?.state === 'suspended') {
-        audioContextRef.current.resume();
-      }
-      audioRef.current.play().then(() => {
-        updateWaveform();
-      }).catch(err => console.log("Audio playback failed:", err));
+      audioRef.current.play().catch(e => console.log("Cassette Audio failed:", e));
+      animationRef.current = window.setInterval(fakeWaveform, 150);
     }
     setIsPlaying(!isPlaying);
   };

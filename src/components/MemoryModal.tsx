@@ -37,12 +37,11 @@ export default function MemoryModal({ memory, onClose }: MemoryModalProps) {
             onClick={(e) => e.stopPropagation()}
           >
             {memory.imageUrl && (
-              <div className="relative w-full md:w-1/2 aspect-square md:aspect-auto">
-                <Image 
+              <div className="relative w-full md:w-1/2 aspect-square md:aspect-auto flex-shrink-0">
+                <img 
                   src={memory.imageUrl}
                   alt={memory.caption || ""}
-                  fill
-                  className="object-cover"
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}

@@ -27,34 +27,7 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] 
   const currentSongSrc = currentSong?.src;
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
-    if (currentSongSrc) {
-      audioRef.current = new Audio(currentSongSrc);
-      
-      // Auto-play next song when ended
-      audioRef.current.onended = () => {
-        handleNext();
-      };
-
-      if (isPlaying) {
-        audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-      }
-    }
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-      }
-    };
-  }, [currentIndex, currentSongSrc]);
-
-  // Keep audio play state in sync
-  useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && currentSongSrc) {
       if (isPlaying) {
         audioRef.current.play().catch(e => {
           console.error("Audio play failed:", e);
@@ -64,7 +37,11 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] 
         audioRef.current.pause();
       }
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentSongSrc]);
+
+  const handleEnded = () => {
+    handleNext();
+  };
 
   const togglePlay = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,6 +73,12 @@ export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] 
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
       className="absolute bg-[#f4eade] p-5 rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.4)] border-2 border-[#d4c5b3] cursor-grab active:cursor-grabbing hover:z-50 flex flex-col gap-4 w-[340px]"
     >
+      <audio 
+        ref={audioRef} 
+        src={currentSongSrc} 
+        onEnded={handleEnded} 
+        preload="auto" 
+      />
       <div className="flex justify-between items-center px-1">
         <h3 className="font-serif text-xl text-ink font-bold flex items-center gap-2 tracking-wide">
           <Music size={20} className="text-rose-soft" /> Our Soundtrack

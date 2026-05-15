@@ -46,12 +46,10 @@ export default function Polaroid({ memory, onClick }: PolaroidProps) {
 
       <div className="relative w-full h-[250px] bg-ink-light overflow-hidden">
         {memory.imageUrl && (
-          <Image 
+          <img 
             src={memory.imageUrl}
             alt={memory.caption || "Memory"}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-105 saturate-50 contrast-125 sepia-[0.2]"
-            sizes="(max-width: 300px) 100vw, 300px"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 saturate-50 contrast-125 sepia-[0.2]"
           />
         )}
         <div className="absolute inset-0 bg-noise mix-blend-overlay pointer-events-none" />
