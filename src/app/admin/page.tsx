@@ -25,7 +25,7 @@ export default function AdminPage() {
     { id: "countdown", name: "Day Countdown", description: "A live counter for your next anniversary or event.", icon: CalendarHeart, color: "bg-purple-50 text-purple-600 border-purple-100" },
     { id: "timeline", name: "Timeline Milestone", description: "Add a new milestone string to the memory board.", icon: MapPin, color: "bg-amber-50 text-amber-600 border-amber-100" },
     { id: "future", name: "Future Dream", description: "A floating cloud holding your future goals.", icon: Cloud, color: "bg-sky-50 text-sky-600 border-sky-100" },
-    { id: "roulette", name: "Image Roulette", description: "A playable slot machine that cycles through your photos.", icon: Dices, color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
+    { id: "roulette", name: "Slot Machine", description: "A playable slot machine with custom icons.", icon: Dices, color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
     { id: "vinyl_song", name: "Vinyl Track(s)", description: "Add a new song to the global Vinyl Record Player.", icon: Disc3, color: "bg-zinc-50 text-zinc-600 border-zinc-100" },
     { id: "treasure_qna", name: "Vintage Treasure", description: "A beautiful hidden Q&A snippet.", icon: BookOpen, color: "bg-stone-50 text-stone-600 border-stone-100" },
   ];
