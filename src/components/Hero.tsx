@@ -53,7 +53,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-[#fbfaf6] text-[#333] overflow-hidden origin-left"
+      className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-white text-[#333] overflow-hidden origin-left"
       style={{ transformStyle: "preserve-3d", perspective: "2000px" }}
       initial={{ rotateY: 0 }}
       animate={{ rotateY: isFlipping ? -180 : 0 }}
@@ -61,32 +61,25 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
     >
       {/* Front Face of the Cover Page */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-start bg-[#fbfaf6]"
-        style={{ 
-          backfaceVisibility: "hidden",
-          backgroundImage: "url('/noise.png')", 
-          backgroundBlendMode: "multiply", 
-          opacity: 0.98 
-        }}
+        className="absolute inset-0 flex flex-col items-center justify-start bg-white"
+        style={{ backfaceVisibility: "hidden" }}
       >
-        {/* Elegant Frame Outline */}
-        <div className="absolute inset-4 md:inset-8 border border-[#e8dfcf] pointer-events-none z-10" />
 
         {/* Vintage Tulip Image overlapping from top */}
-        <div className="relative w-full max-w-[600px] h-[45vh] flex items-start justify-center mt-[-20px] md:mt-[-40px]">
+        <div className="relative w-full max-w-[800px] h-[55vh] flex items-center justify-center -mt-8 md:-mt-4">
           <motion.img 
             src="/hero-tulips.png" 
             alt="Vintage Tulips" 
-            className="w-full h-full object-contain object-top drop-shadow-md z-0"
+            className="w-full h-full object-cover md:object-contain object-top drop-shadow-sm z-0 mix-blend-multiply"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
           />
           
-          {/* Monogram Overlay */}
+          {/* Monogram Overlay positioned over the flower head */}
           <motion.div 
-            className="absolute top-[40%] md:top-[45%] text-[#fbfaf6] font-serif text-5xl md:text-7xl z-20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
-            style={{ textShadow: "1px 1px 3px rgba(0,0,0,0.4)" }}
+            className="absolute top-[25%] md:top-[30%] text-[#fbfaf6] font-serif text-5xl md:text-7xl z-20"
+            style={{ textShadow: "1px 1px 4px rgba(0,0,0,0.4)" }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
@@ -124,13 +117,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
           </motion.button>
         </motion.div>
 
-        {/* Audio Toggle */}
-        <button
-          onClick={toggleAudio}
-          className="absolute top-8 right-8 z-30 p-3 text-[#a58d55] hover:text-[#3a3a3a] transition-all"
-        >
-          {isPlaying ? <Volume2 size={24} strokeWidth={1} /> : <VolumeX size={24} strokeWidth={1} />}
-        </button>
+
 
         {/* Hidden Audio Element - Add src="path/to/music.mp3" later */}
         <audio ref={audioRef} src="/piano.mp3" loop />
