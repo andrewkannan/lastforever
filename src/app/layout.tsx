@@ -19,7 +19,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Our Forever Love",
-  description: "An endless interactive romantic memory board",
+  description: "The love story written in heaven",
 };
 
 export default function RootLayout({
