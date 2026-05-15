@@ -28,16 +28,6 @@ export default function MemoryBoard({
   const constraintsRef = useRef<HTMLDivElement>(null);
   const [selectedMemory, setSelectedMemory] = useState<any | null>(null);
 
-  // Filter memories from DB or fallback
-  const letterMemory = initialMemories.find(m => m.type === "letter") || {
-    id: "drawer",
-    type: "letter",
-    content: "I promise to love you forever and always...",
-    posX: 900,
-    posY: 800,
-    rotation: 0
-  };
-
   const timelinePos = { x: 1600, y: 300 };
   const futurePos = { x: 2300, y: 800 };
 
@@ -102,10 +92,6 @@ export default function MemoryBoard({
               <VinylPlayer position={{ x: 100, y: 350 }} songs={vinylSongs} />
               <CameraRoll position={{ x: 400, y: 800 }} memories={photoMemories} />
 
-              <LoveLetterDrawer 
-                memory={{...letterMemory, position: {x: letterMemory.posX, y: letterMemory.posY}}} 
-                onClick={handleItemClick} 
-              />
               <TimelineSection 
                 position={timelinePos} 
                 memories={timelineMemories} 
@@ -118,7 +104,7 @@ export default function MemoryBoard({
               />
               
               {initialMemories.map((m) => {
-                if (m.type === "letter" || m.type === "timeline" || m.type === "future" || m.type === "settings") return null;
+                if (m.type === "timeline" || m.type === "future" || m.type === "settings") return null;
 
                 const memory = {
                   ...m,
@@ -137,6 +123,10 @@ export default function MemoryBoard({
                 
                 if (m.type === "cassette") {
                   return <CassetteTape key={m.id} memory={memory} onClick={isAdmin ? handleItemClick : undefined} />;
+                }
+
+                if (m.type === "letter") {
+                  return <LoveLetterDrawer key={m.id} memory={memory} onClick={handleItemClick} />;
                 }
 
                 if (memory.type === "photo") {
