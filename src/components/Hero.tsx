@@ -45,9 +45,15 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
     }, 1500); // 1.5 seconds duration matches the transition below
   };
 
+  // Extract initials for the monogram
+  const namesParts = heroConfig.names.split('&').map(n => n.trim());
+  const monogram = namesParts.length === 2 
+    ? `${namesParts[0][0]}&${namesParts[1][0]}` 
+    : heroConfig.names.substring(0, 2).toUpperCase();
+
   return (
     <motion.div
-      className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-background text-foreground overflow-hidden bg-noise origin-left"
+      className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-[#fbfaf6] text-[#333] overflow-hidden origin-left"
       style={{ transformStyle: "preserve-3d", perspective: "2000px" }}
       initial={{ rotateY: 0 }}
       animate={{ rotateY: isFlipping ? -180 : 0 }}
@@ -55,58 +61,84 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
     >
       {/* Front Face of the Cover Page */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center bg-floral-paper"
-        style={{ backfaceVisibility: "hidden" }}
+        className="absolute inset-0 flex flex-col items-center justify-start bg-[#fbfaf6]"
+        style={{ 
+          backfaceVisibility: "hidden",
+          backgroundImage: "url('/noise.png')", 
+          backgroundBlendMode: "multiply", 
+          opacity: 0.98 
+        }}
       >
-        {/* Background Soft Glows & Clouds */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50 z-0">
-          <div className="w-[600px] h-[600px] bg-rose-soft rounded-full blur-[120px] mix-blend-multiply" />
-          <div className="w-[500px] h-[500px] bg-blue-100 rounded-full blur-[100px] mix-blend-multiply -ml-40" />
+        {/* Elegant Frame Outline */}
+        <div className="absolute inset-4 md:inset-8 border border-[#e8dfcf] pointer-events-none z-10" />
+
+        {/* Vintage Tulip Image overlapping from top */}
+        <div className="relative w-full max-w-[600px] h-[45vh] flex items-start justify-center mt-[-20px] md:mt-[-40px]">
+          <motion.img 
+            src="/hero-tulips.png" 
+            alt="Vintage Tulips" 
+            className="w-full h-full object-contain object-top drop-shadow-md z-0"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+          />
+          
+          {/* Monogram Overlay */}
+          <motion.div 
+            className="absolute top-[40%] md:top-[45%] text-[#fbfaf6] font-serif text-5xl md:text-7xl z-20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]"
+            style={{ textShadow: "1px 1px 3px rgba(0,0,0,0.4)" }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
+          >
+            {monogram}
+          </motion.div>
         </div>
 
-        {/* Watercolor Floral Borders */}
-        <img src="/wedding-cover-flowers.png" alt="Flowers Top Left" className="absolute top-0 left-0 w-64 md:w-96 object-contain pointer-events-none z-10" />
-        <img src="/wedding-cover-flowers.png" alt="Flowers Bottom Right" className="absolute bottom-0 right-0 w-64 md:w-96 object-contain pointer-events-none z-10 rotate-180" />
-        <img src="/wedding-cover-flowers.png" alt="Flowers Top Right" className="absolute top-0 right-0 w-48 md:w-64 object-contain pointer-events-none z-10 scale-x-[-1] opacity-70" />
-        <img src="/wedding-cover-flowers.png" alt="Flowers Bottom Left" className="absolute bottom-0 left-0 w-48 md:w-64 object-contain pointer-events-none z-10 scale-y-[-1] opacity-70" />
-
-        <button
-          onClick={toggleAudio}
-          className="absolute top-8 right-8 z-20 p-3 rounded-full bg-white/40 backdrop-blur-md text-ink hover:bg-white/60 transition-all border border-white/50"
-        >
-          {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
-        </button>
-
-        {/* Hidden Audio Element - Add src="path/to/music.mp3" later */}
-        <audio ref={audioRef} loop />
-
+        {/* Typography Section */}
         <motion.div
-          className="z-20 text-center flex flex-col items-center bg-white/60 backdrop-blur-sm p-12 rounded-3xl border border-white/50 shadow-2xl"
+          className="z-20 text-center flex flex-col items-center mt-8 md:mt-12 px-6"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 2, delay: 0.5 }}
+          transition={{ duration: 2, delay: 0.8 }}
         >
-          <h1 className="font-serif text-6xl md:text-8xl tracking-tight text-ink mb-6 text-shadow-soft">
+          <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-10 md:mb-16">
+            The Wedding Of
+          </p>
+
+          <h1 className="font-serif text-[#3a3a3a] text-2xl md:text-4xl tracking-[0.3em] md:tracking-[0.4em] uppercase mb-10 md:mb-16 leading-relaxed">
             {heroConfig.names}
           </h1>
-          <p className="font-hand text-3xl md:text-4xl text-ink-light mb-12">
-            {heroConfig.tagline}
+
+          <p className="font-sans text-[#a58d55] text-xs md:text-sm tracking-[0.4em] md:tracking-[0.6em] uppercase mb-12">
+            November 2024
           </p>
 
           <motion.button
             onClick={handleBegin}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-ink text-[#f4eade] font-serif text-lg tracking-widest uppercase rounded-full shadow-lg hover:shadow-xl transition-all"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-8 px-8 py-3 border border-[#a58d55] text-[#a58d55] hover:bg-[#a58d55] hover:text-white font-sans text-xs tracking-widest uppercase transition-all duration-300"
           >
-            Begin Our Story
+            Open Book
           </motion.button>
         </motion.div>
+
+        {/* Audio Toggle */}
+        <button
+          onClick={toggleAudio}
+          className="absolute top-8 right-8 z-30 p-3 text-[#a58d55] hover:text-[#3a3a3a] transition-all"
+        >
+          {isPlaying ? <Volume2 size={24} strokeWidth={1} /> : <VolumeX size={24} strokeWidth={1} />}
+        </button>
+
+        {/* Hidden Audio Element - Add src="path/to/music.mp3" later */}
+        <audio ref={audioRef} src="/piano.mp3" loop />
       </div>
 
       {/* Back Face (when flipping away) */}
       <div 
-        className="absolute inset-0 bg-[#eaddcf] rotate-y-180"
+        className="absolute inset-0 bg-[#e8dfcf] rotate-y-180"
         style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
       >
         <div className="absolute inset-0 bg-noise opacity-50" />
