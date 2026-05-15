@@ -42,10 +42,10 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
       transition={{ duration: 1.5, ease: [0.645, 0.045, 0.355, 1.000] }}
     >
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-evenly bg-white w-full h-full py-[5vh] md:py-[10vh]"
+        className="absolute inset-0 flex flex-col items-center justify-center bg-white w-full h-full py-[5vh] md:py-[10vh]"
         style={{ backfaceVisibility: "hidden" }}
       >
-
+        <div className="flex flex-col items-center justify-center w-full gap-2 md:gap-8 -mt-8 md:-mt-12">
         {/* Vintage Tulip Head in the Center */}
         <motion.div 
           className="relative w-[260px] h-[260px] md:w-[320px] md:h-[320px] flex items-center justify-center shrink-0 pointer-events-none"
@@ -72,7 +72,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
         </motion.div>
 
         {/* Typography Section */}
-        <div className="relative z-20 flex flex-col items-center w-full px-6 text-center -mt-8 md:-mt-12">
+        <div className="relative z-20 flex flex-col items-center w-full px-6 text-center">
           <motion.div
             className="flex flex-col items-center gap-6 md:gap-8"
             initial={{ opacity: 0, y: 30 }}
@@ -130,6 +130,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
           </motion.div>
         </div>
 
+        </div>
         {/* Hidden Audio Element */}
         <audio ref={audioRef} src="/piano.mp3" loop />
       </div>
