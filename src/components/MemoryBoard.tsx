@@ -15,6 +15,7 @@ import VinylPlayer from "./VinylPlayer";
 import CassetteTape from "./CassetteTape";
 import RelationshipStats from "./RelationshipStats";
 import CameraRoll from "./CameraRoll";
+import ImageRoulette from "./ImageRoulette";
 
 export default function MemoryBoard({ 
   initialMemories,
@@ -132,6 +133,11 @@ export default function MemoryBoard({
                 if (memory.type === "photo") {
                   return <Polaroid key={memory.id} memory={memory} onClick={handleItemClick} />;
                 }
+
+                if (memory.type === "roulette") {
+                  return <ImageRoulette key={memory.id} memory={memory} photoMemories={photoMemories} onClick={handleItemClick} />;
+                }
+
                 return null;
               })}
             </div>

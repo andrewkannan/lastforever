@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getMemories, addMemory, deleteMemory, editMemory } from "@/actions/memoryActions";
-import { Trash2, Plus, LogIn, Pencil, X, Settings, Music, ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen } from "lucide-react";
+import { Trash2, Plus, LogIn, Pencil, X, Settings, Music, ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen, Dices } from "lucide-react";
 import MemoryBoard from "@/components/MemoryBoard";
 import AudioRecorder from "@/components/AudioRecorder";
 
@@ -25,6 +25,7 @@ export default function AdminPage() {
     { id: "countdown", name: "Day Countdown", description: "A live counter for your next anniversary or event.", icon: CalendarHeart, color: "bg-purple-50 text-purple-600 border-purple-100" },
     { id: "timeline", name: "Timeline Milestone", description: "Add a new milestone string to the memory board.", icon: MapPin, color: "bg-amber-50 text-amber-600 border-amber-100" },
     { id: "future", name: "Future Dream", description: "A floating cloud holding your future goals.", icon: Cloud, color: "bg-sky-50 text-sky-600 border-sky-100" },
+    { id: "roulette", name: "Image Roulette", description: "A playable slot machine that cycles through your photos.", icon: Dices, color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
     { id: "vinyl_song", name: "Vinyl Track(s)", description: "Add a new song to the global Vinyl Record Player.", icon: Disc3, color: "bg-zinc-50 text-zinc-600 border-zinc-100" },
     { id: "treasure_qna", name: "Vintage Treasure", description: "A beautiful hidden Q&A snippet.", icon: BookOpen, color: "bg-stone-50 text-stone-600 border-stone-100" },
   ];
@@ -207,9 +208,9 @@ export default function AdminPage() {
                 <input type="hidden" name="type" value={selectedMemoryType || editingMemory?.type || "photo"} />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Hide Date for Notes, Letters, Future, Cassette. Show for Photo, Timeline, Settings, Countdown. */}
+                  {/* Hide Date for Notes, Letters, Future, Cassette, Roulette. Show for Photo, Timeline, Settings, Countdown. */}
                   <div className="flex flex-col gap-2" style={{ 
-                    display: ["note", "letter", "future", "cassette", "vinyl_song", "treasure_qna"].includes(selectedMemoryType || editingMemory?.type || "photo") ? "none" : "flex" 
+                    display: ["note", "letter", "future", "cassette", "vinyl_song", "treasure_qna", "roulette"].includes(selectedMemoryType || editingMemory?.type || "photo") ? "none" : "flex" 
                   }}>
                   <label className="text-sm font-bold text-ink-light">
                     {(selectedMemoryType || editingMemory?.type || "photo") === "timeline" ? "Year (e.g. 2024)" : (
@@ -277,7 +278,9 @@ export default function AdminPage() {
                   <label className="text-sm font-bold text-ink-light">
                     {(selectedMemoryType || editingMemory?.type || "photo") === "timeline" ? "Event Name" : (
                       (selectedMemoryType || editingMemory?.type || "photo") === "countdown" ? "Countdown Title (e.g. Our Wedding)" : (
-                        (selectedMemoryType || editingMemory?.type || "photo") === "vinyl_song" ? "Song Title" : "Caption or Content"
+                        (selectedMemoryType || editingMemory?.type || "photo") === "vinyl_song" ? "Song Title" : (
+                          (selectedMemoryType || editingMemory?.type || "photo") === "roulette" ? "Machine Title / Caption" : "Caption or Content"
+                        )
                       )
                     )}
                   </label>
