@@ -74,7 +74,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
         {/* Typography Section */}
         <div className="relative z-20 flex flex-col items-center w-full px-6 text-center">
           <motion.div
-            className="flex flex-col items-center gap-3 md:gap-5 -mt-12 md:-mt-20"
+            className="flex flex-col items-center gap-6 md:gap-8 -mt-4 md:-mt-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2, delay: 0.8 }}
@@ -102,7 +102,7 @@ export default function Hero({ onBegin }: { onBegin: () => void }) {
               onClick={handleBegin}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative w-28 h-28 flex items-center justify-center group mt-4 md:mt-8"
+              className="relative w-28 h-28 flex items-center justify-center group mt-8 md:mt-12"
             >
               {/* Wax seal body */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#9c2727] to-[#631414] rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.2),inset_0_-3px_6px_rgba(0,0,0,0.3),inset_0_3px_6px_rgba(255,255,255,0.2)] flex items-center justify-center transition-all duration-300 border-[1px] border-[#570f0f]">
