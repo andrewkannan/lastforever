@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getMemories, addMemory, deleteMemory, editMemory } from "@/actions/memoryActions";
-import { Trash2, Plus, LogIn, Pencil, X, Settings, Music, ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen, Dices } from "lucide-react";
+import { getMemories, addMemory, deleteMemory, editMemory, verifyAdminPin } from "@/actions/memoryActions";
+import { Trash2, Plus, Lock, Pencil, X, Settings, Music, ArrowLeft, Camera, Flower, CalendarHeart, Disc3, Mail, MapPin, Cloud, Mic, BookOpen, Dices } from "lucide-react";
 import MemoryBoard from "@/components/MemoryBoard";
 import AudioRecorder from "@/components/AudioRecorder";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState("");
+  const [pin, setPin] = useState(["", "", "", ""]);
   const [memories, setMemories] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingMemory, setEditingMemory] = useState<any | null>(null);
@@ -31,15 +31,51 @@ export default function AdminPage() {
   ];
 
   // Authenticate
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === "kenishalikescoffee") {
+  const handlePinChange = (index: number, value: string) => {
+    // Only allow numbers
+    if (value && !/^\d+$/.test(value)) return;
+    
+    const newPin = [...pin];
+    // take the last character if they pasted or typed fast
+    newPin[index] = value.substring(value.length - 1);
+    setPin(newPin);
+
+    // Auto focus next
+    if (value && index < 3) {
+      const nextInput = document.getElementById(`pin-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handlePinKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !pin[index] && index > 0) {
+      const prevInput = document.getElementById(`pin-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const pinString = pin.join("");
+    if (pinString.length !== 4) return;
+    
+    const isValid = await verifyAdminPin(pinString);
+    if (isValid) {
       setIsAuthenticated(true);
       fetchMemories();
     } else {
-      alert("Incorrect passcode");
+      alert("Incorrect PIN");
+      setPin(["", "", "", ""]);
+      document.getElementById("pin-0")?.focus();
     }
   };
+
+  // Auto-submit when 4th digit entered
+  useEffect(() => {
+    if (pin.join("").length === 4) {
+      handleLogin();
+    }
+  }, [pin]);
 
   const fetchMemories = async () => {
     const data = await getMemories();
@@ -96,18 +132,33 @@ export default function AdminPage() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-        <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-lg flex flex-col gap-4 max-w-sm w-full">
-          <h1 className="font-serif text-3xl text-ink text-center mb-4">Secret Area</h1>
-          <input 
-            type="password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter passcode"
-            className="p-3 border border-ink-light/20 rounded focus:outline-none focus:border-ink bg-transparent"
-          />
-          <button type="submit" className="flex items-center justify-center gap-2 bg-ink text-paper p-3 rounded hover:bg-ink-light transition">
-            <LogIn size={20} />
-            Enter
+        <form onSubmit={handleLogin} className="bg-white p-10 rounded-2xl shadow-2xl flex flex-col items-center gap-6 max-w-sm w-full border border-ink/10">
+          <div className="w-16 h-16 rounded-full bg-ink/5 flex items-center justify-center mb-2">
+            <Lock size={32} className="text-ink" />
+          </div>
+          <h1 className="font-serif text-3xl text-ink text-center">Admin Access</h1>
+          <p className="text-sm text-ink-light text-center mb-2">Enter your 4-digit security PIN</p>
+          
+          <div className="flex gap-4 mb-4">
+            {pin.map((digit, index) => (
+              <input 
+                key={index}
+                id={`pin-${index}`}
+                type="password"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handlePinChange(index, e.target.value)}
+                onKeyDown={(e) => handlePinKeyDown(index, e)}
+                className="w-14 h-16 text-center text-3xl font-bold border-2 border-ink-light/30 rounded-xl focus:outline-none focus:border-ink focus:shadow-[0_0_15px_rgba(62,71,56,0.2)] bg-transparent transition-all"
+                autoComplete="off"
+              />
+            ))}
+          </div>
+          
+          <button type="submit" className="w-full flex items-center justify-center gap-2 bg-ink text-paper p-4 rounded-xl hover:bg-ink-light transition font-bold shadow-lg">
+            Unlock Padlock
           </button>
         </form>
       </div>

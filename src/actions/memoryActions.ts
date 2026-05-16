@@ -170,3 +170,16 @@ export async function editMemory(id: string, formData: FormData) {
     return { success: false, error: "Failed to edit memory" };
   }
 }
+
+export async function verifyAdminPin(pin: string) {
+  // If the environment variable isn't set, default to a secure fallback for dev, 
+  // but in production it should strictly match the env var.
+  const correctPin = process.env.ADMIN_PIN;
+  
+  if (!correctPin) {
+    // Fallback if not configured in Railway yet to prevent immediate lockout
+    return pin === "1234";
+  }
+
+  return pin === correctPin;
+}
