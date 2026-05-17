@@ -16,7 +16,7 @@ export default function AdminKey({ position = { x: 100, y: 250 } }) {
       style={{ x, y, touchAction: "none" }}
       whileHover={{ scale: 1.15, rotate: 15, zIndex: 100 }}
       whileTap={{ scale: 0.95, zIndex: 100 }}
-      className="absolute cursor-grab active:cursor-grabbing z-50 text-[#a58d55] hover:text-[#ffd700] transition-colors"
+      className="absolute cursor-grab active:cursor-grabbing z-50 text-[#9ca3af] hover:text-[#e5e7eb] transition-colors"
       onClick={() => router.push("/admin")}
       title="Admin Access"
     >
