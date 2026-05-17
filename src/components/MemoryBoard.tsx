@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { Key } from "lucide-react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Polaroid from "./Polaroid";
 import MemoryModal from "./MemoryModal";
@@ -20,11 +22,13 @@ import SlotMachine from "./SlotMachine";
 export default function MemoryBoard({ 
   initialMemories,
   isAdmin = false,
-  onEdit
+  onEdit,
+  isActive = false
 }: { 
   initialMemories: any[],
   isAdmin?: boolean,
-  onEdit?: (memory: any) => void
+  onEdit?: (memory: any) => void,
+  isActive?: boolean
 }) {
   const constraintsRef = useRef<HTMLDivElement>(null);
   const [selectedMemory, setSelectedMemory] = useState<any | null>(null);
@@ -90,8 +94,23 @@ export default function MemoryBoard({
                 isAdmin={isAdmin}
                 onEdit={() => isAdmin && onEdit && onEdit(settingsMemory || { type: "settings", date: anniversaryDate })}
               />
-              <VinylPlayer position={{ x: 100, y: 350 }} songs={vinylSongs} />
+              <VinylPlayer position={{ x: 100, y: 350 }} songs={vinylSongs} isActive={isActive} />
               <CameraRoll position={{ x: 400, y: 800 }} memories={photoMemories} />
+              
+              {/* Admin Page Shortcut - Key Box */}
+              {!isAdmin && (
+                <Link href="/admin" className="absolute z-50" style={{ left: 100, top: 250 }}>
+                  <motion.div
+                    className="bg-gradient-to-b from-[#8b5a2b] to-[#654321] p-3 rounded-lg shadow-[0_10px_20px_rgba(0,0,0,0.5)] border-2 border-[#3e2723] cursor-pointer flex flex-col items-center justify-center gap-1"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner mb-1" />
+                    <Key size={20} className="text-[#ffd700] drop-shadow-md" />
+                    <div className="text-[9px] font-sans text-[#ffd700] font-bold uppercase tracking-wider opacity-80 mt-1">Admin</div>
+                  </motion.div>
+                </Link>
+              )}
 
               <TimelineSection 
                 position={timelinePos} 

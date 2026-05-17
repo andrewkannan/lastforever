@@ -155,7 +155,7 @@ export default function SlotMachine({ memory, onClick }: SlotMachineProps) {
           {/* Main Chassis Body */}
           <div 
             className="absolute inset-0 bg-gradient-to-b from-[#FAFCF8] via-[#F2F5EF] to-[#FFF4CE] rounded-t-[140px] rounded-b-2xl border-[8px] border-white shadow-[0_20px_40px_rgba(0,0,0,0.15),inset_0_-10px_30px_rgba(0,0,0,0.05)] flex flex-col items-center p-4 z-10"
-            onClick={() => onClick && onClick(memory)}
+            onClick={(e) => { e.stopPropagation(); handleSpin(); }}
           >
             
             {/* Top Banner ("Chance to Love") */}

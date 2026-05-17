@@ -13,18 +13,27 @@ interface Song {
 interface VinylPlayerProps {
   position?: { x: number; y: number };
   songs?: Song[];
+  isActive?: boolean;
 }
 
-export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [] }: VinylPlayerProps) {
+export default function VinylPlayer({ position = { x: 100, y: 100 }, songs = [], isActive = false }: VinylPlayerProps) {
   const x = useMotionValue(position.x);
   const y = useMotionValue(position.y);
   
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const currentSong = songs[currentIndex];
   const currentSongSrc = currentSong?.src;
+
+  useEffect(() => {
+    if (isActive && !hasAutoPlayed && songs.length > 0) {
+      setIsPlaying(true);
+      setHasAutoPlayed(true);
+    }
+  }, [isActive, hasAutoPlayed, songs.length]);
 
   useEffect(() => {
     if (audioRef.current && currentSongSrc) {

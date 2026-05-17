@@ -14,7 +14,7 @@ export default function HomeClient({ initialMemories }: { initialMemories: any[]
       
       {/* Layer 3: Memory Board (Always mounted behind so it's ready when pages flip) */}
       <div className="absolute inset-0 z-0">
-        <MemoryBoard initialMemories={initialMemories} />
+        <MemoryBoard initialMemories={initialMemories} isActive={layer === 3} />
       </div>
 
       <AnimatePresence>
